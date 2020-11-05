@@ -20,5 +20,37 @@ class TestController extends Controller
         Redis::set($key,time());
         $time = Redis::get($key);
         echo strtotime(date('Y-m-d'),$time);
+        echo '<hr>';
+        echo 'numberone';
+        
     }
+    
+    /*
+     * 接口
+     */
+    public function APIS(){
+        
+        $signature = $_GET["signature"];
+        $timestamp = $_GET["timestamp"];
+        $nonce = $_GET["nonce"];
+        
+        $token = TOKEN;
+        $tmpArr = array($token, $timestamp, $nonce);
+        sort($tmpArr, SORT_STRING);
+        $tmpStr = implode( $tmpArr );
+        $tmpStr = sha1( $tmpStr );
+        
+        if( $tmpStr == $signature ){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
 }

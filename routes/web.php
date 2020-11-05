@@ -15,4 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/test','Test\TestController@test');
+Route::get('/test','Test\TestController@test');//测试
+
+Route::get('apis','Test\TestController@APIS');//测试接口
