@@ -12,8 +12,8 @@ class TestController extends Controller
     public function test(){
 
         // echo PHPinfo();die;
-        //连接数据库
-        $a = DB::table('p_users')->limit(5)->get();
+        //测试
+        // $a = DB::table('p_users')->limit(5)->get();
         
         //redis
         $key = 'user';
