@@ -17,4 +17,4 @@ Route::get('/', function () {
 
 Route::get('/test','Test\TestController@test');//测试
 
-Route::get('apis','Test\TestController@APIS');//测试接口
+Route::get('/wx','ApiController@checkwx');//测试接口

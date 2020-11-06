@@ -25,27 +25,7 @@ class TestController extends Controller
         
     }
     
-    /*
-     * 接口
-     */
-    public function APIS(){
-        
-        $signature = $_GET["signature"];
-        $timestamp = time();
-        $nonce = $_GET["nonce"];
-        
-        $token = env('WX_TOKEN');
-        $tmpArr = array($token, $timestamp, $nonce);
-        sort($tmpArr, SORT_STRING);
-        $tmpStr = implode( $tmpArr );
-        $tmpStr = sha1( $tmpStr );
-        
-        if( $tmpStr == $signature ){
-            return true;
-        }else{
-            return false;
-        }
-    }
+    
     
     
     
