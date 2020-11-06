@@ -25,7 +25,6 @@ class ApiController extends Controller
         
         if( $tmpStr == $signature ){
             echo $_GET['echostr'];
-            
         }else{
             echo 111;
         }
@@ -36,24 +35,24 @@ class ApiController extends Controller
      */
     public function Aoken(){
         $key = 'wx:access_token';
-        $token = Redis::get($key);
-        if($token){
-            echo 111;
+
+        if(Redis::get($key)){
+            echo $key;
         }else{
             $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".env('WX_APPID')."&secret=".env('WX_APPSECRET');
         
-        $ken = file_get_contents($url);
-        $data = json_decode($ken,true);
-        
-        Redis::set($key,$data['access_token']);
-        Redis::expire($key,3600);
-        
-
+            $ken = file_get_contents($url);
+            $data = json_decode($ken,true);
+            
+            Redis::set($key,$data['access_token']);
+            Redis::expire($key,3600);
         }
         
     }
 
-    /**ceshi  */
+    /**
+     * 推送事件
+     */
     public function event(){
         $signature = $_GET["signature"];
         $timestamp = $_GET["timestamp"];
@@ -68,15 +67,14 @@ class ApiController extends Controller
         if( $tmpStr == $signature ){
             //接受数据
             $xml_str = file_get_contents('php://input');
-            //写入文档
-            $data = simplexml_load_string($xml_str, 'SimpleXMLElement', LIBXML_NOCDATA);
-            file_put_contents('wx_event .log',$data,FILE_APPEND);
-            echo '';
-    
+
+            //记录日志
+            file_put_contents('wx_event.log',$xml_str,FILE_APPEND);
+            echo '';die;
+
         }else{
             echo 111;
         }
-
-        
+    }
 
 }
