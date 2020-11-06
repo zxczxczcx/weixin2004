@@ -29,7 +29,8 @@ class ApiController extends Controller
             //接受数据
             $xml_str = file_get_contents('php://input');
             //写入文档
-            file_put_contents('wx_logs.log',$xml_str,FILE_APPEND);
+            $data = simplexml_load_string($xml_str, 'SimpleXMLElement', LIBXML_NOCDATA);
+            file_put_contents('wx_event .log',$data,FILE_APPEND);
             
         }else{
             echo 111;
