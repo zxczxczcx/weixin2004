@@ -31,10 +31,10 @@ class TestController extends Controller
     public function APIS(){
         
         $signature = $_GET["signature"];
-        $timestamp = $_GET["timestamp"];
+        $timestamp = time();
         $nonce = $_GET["nonce"];
         
-        $token = TOKEN;
+        $token = env('WX_TOKEN');
         $tmpArr = array($token, $timestamp, $nonce);
         sort($tmpArr, SORT_STRING);
         $tmpStr = implode( $tmpArr );
