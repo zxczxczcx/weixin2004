@@ -24,13 +24,7 @@ class ApiController extends Controller
         $tmpStr = sha1( $tmpStr );
         
         if( $tmpStr == $signature ){
-            // echo $_GET['echostr'];
-            
-            //接受数据
-            $xml_str = file_get_contents('php://input');
-            //写入文档
-            $data = simplexml_load_string($xml_str, 'SimpleXMLElement', LIBXML_NOCDATA);
-            file_put_contents('wx_event .log',$data,FILE_APPEND);
+            echo $_GET['echostr'];
             
         }else{
             echo 111;
@@ -58,5 +52,31 @@ class ApiController extends Controller
         }
         
     }
+
+    /**ceshi  */
+    public function event(){
+        $signature = $_GET["signature"];
+        $timestamp = $_GET["timestamp"];
+        $nonce = $_GET["nonce"];
+        
+        $token = env('WX_TOKEN');
+        $tmpArr = array($token, $timestamp, $nonce);
+        sort($tmpArr, SORT_STRING);
+        $tmpStr = implode( $tmpArr );
+        $tmpStr = sha1( $tmpStr );
+        
+        if( $tmpStr == $signature ){
+            //接受数据
+            $xml_str = file_get_contents('php://input');
+            //写入文档
+            $data = simplexml_load_string($xml_str, 'SimpleXMLElement', LIBXML_NOCDATA);
+            file_put_contents('wx_event .log',$data,FILE_APPEND);
+            echo '';
+    
+        }else{
+            echo 111;
+        }
+
+        
 
 }
