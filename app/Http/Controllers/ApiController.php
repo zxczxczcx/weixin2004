@@ -43,7 +43,7 @@ class ApiController extends Controller
         $key = 'wx:access_token';
         $token = Redis::get($key);
         if($token){
-            echo $key;
+            echo 111;
         }else{
             $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".env('WX_APPID')."&secret=".env('WX_APPSECRET');
         
