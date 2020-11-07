@@ -110,7 +110,7 @@ class ApiController extends Controller
         //返回数据
         $atten_str = sprintf($xml_attention,$tousername,$fromusername,time(),$MsgType,$Content);
         file_put_contents('wx_log.log',$atten_str);
-        echo  $atten_str;
+        return  $atten_str;
     }
 
 
