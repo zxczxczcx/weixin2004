@@ -73,16 +73,15 @@ class ApiController extends Controller
             file_put_contents('wx_event.log',$xml_str,FILE_APPEND);
             echo '';
             $data = simplexml_load_string($xml_str,'SimpleXMLElement',LIBXML_NOCDATA);
-            dd($data);
+            file_put_contents('wx_event.log',$data,FILE_APPEND);die;
             $xml = '<xml>
-                        <ToUserName><![CDATA[gh_a6529b5ebff3]]></ToUserName>
-                        <FromUserName><![CDATA[onRjS5msz_F_SCyA5Su2GSA-Ij1c]]></FromUserName>
-                        <CreateTime>1604711004</CreateTime>
-                        <MsgType><![CDATA[event]]></MsgType>
-                        <Event><![CDATA[subscribe]]></Event>
-                        <EventKey><![CDATA[]]></EventKey>
+                        <ToUserName><![CDATA[toUser]]></ToUserName>
+                        <FromUserName><![CDATA[fromUser]]></FromUserName>
+                        <CreateTime>12345678</CreateTime>
+                        <MsgType><![CDATA[text]]></MsgType>
+                        <Content><![CDATA[你好]]></Content>
                     </xml>';
-            echo $xml;
+            return $xml;
 
         }else{
             echo 111;
