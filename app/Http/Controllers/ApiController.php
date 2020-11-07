@@ -98,7 +98,7 @@ class ApiController extends Controller
         $tousername = $data->ToUserName;
         $fromusername = $data->FromUserName;
         $MsgType = 'text';
-        
+        file_put_contents('wx_log.log',$tousername);
         $xml_attention = 
                     '<xml>
                     <ToUserName><![CDATA[%s]]></ToUserName>
