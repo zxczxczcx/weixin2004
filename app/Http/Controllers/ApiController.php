@@ -68,37 +68,22 @@ class ApiController extends Controller
         if( $tmpStr == $signature ){
             //接受数据
             $xml_str = file_get_contents('php://input');
-
             //记录日志
             file_put_contents('wx_event.log',$xml_str,FILE_APPEND);
-            echo '';
+            
             // $data = simplexml_load_string($xml_str,'SimpleXMLElement',LIBXML_NOCDATA);
             $data = simplexml_load_string($xml_str);
             //判断
             if($data->MsgType=='event'){
                 //关注
                 if($data->Event=='subscribe'){
+                    $Content = '关注成功';
+                    $result = $this->attention($data,$Content);
+                    return $result;
 
-                    //拼凑数据
-                    $tousername = $data->ToUserName;
-                    $fromusername = $data->FromUserName;
-                    $MsgType = 'text';
-                    $content = '欢迎您的到来';
-                    $time = time();
-                    $xml_attention = '<xml>
-                        <ToUserName><![CDATA[%s]]></ToUserName>
-                        <FromUserName><![CDATA[%s]]></FromUserName>
-                        <CreateTime>%s</CreateTime>
-                        <MsgType><![CDATA[%s]]></MsgType>
-                        <Content><![CDATA[%s]]></Content>
-                    </xml>';
-        
-                    //返回数据
-                    $atten_str = sprintf($xml_attention,$tousername,$fromusername,time(),'text',$content);
-                    echo  $atten_str;
                 }
             }
-            
+            echo '';
 
         }else{
             echo '';
@@ -108,12 +93,11 @@ class ApiController extends Controller
     /**
      * 关注 
      */
-    public function attention($data){
+    public function attention($data,$Content){
         //拼凑数据
         $tousername = $data->ToUserName;
         $fromusername = $data->FromUserName;
         $MsgType = 'text';
-        $content = '欢迎您的到来';
         
         $xml_attention = 
                     '<xml>
@@ -123,9 +107,8 @@ class ApiController extends Controller
                     <MsgType><![CDATA[%s]]></MsgType>
                     <Content><![CDATA[%s]]></Content>
                     </xml>';
-        
         //返回数据
-        $atten_str = sprintf($xml_attention,$tousername,$fromusername,time(),$MsgType,$content);
+        $atten_str = sprintf($xml_attention,$tousername,$fromusername,time(),$MsgType,$Content);
         echo  $atten_str;
     }
 
