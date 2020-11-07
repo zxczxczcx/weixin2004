@@ -95,7 +95,6 @@ class ApiController extends Controller
         //拼凑数据
         $tousername = $data->ToUserName;
         $fromusername = $data->FromUserName;
-        $time = time();
         $event = 'text';
         $content = '欢迎您的到来';
         
@@ -110,7 +109,7 @@ class ApiController extends Controller
                     </xml>';
         
         //返回数据
-        $atten_str = sprintf($xml_attention,$tousername,$fromusername,$time,$event,$content);
+        $atten_str = sprintf($xml_attention,$tousername,$fromusername,time(),$event,$content);
         return $atten_str;
     }
 
