@@ -79,11 +79,12 @@ class ApiController extends Controller
                 if($data->Event=='subscribe'){
                     $Content = '关注成功';
                     $result = $this->attention($data,$Content);
-                    return $result;
+                    echo  $result;
 
                 }
+                return $Content;
             }
-            echo '';
+            
 
         }else{
             echo '';
