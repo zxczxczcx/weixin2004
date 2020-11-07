@@ -72,8 +72,8 @@ class ApiController extends Controller
             //记录日志
             file_put_contents('wx_event.log',$xml_str,FILE_APPEND);
             echo '';
-            $data = simplexml_load_string($xml_str,'SimpleXMLElement',LIBXML_NOCDATA);
-            
+            // $data = simplexml_load_string($xml_str,'SimpleXMLElement',LIBXML_NOCDATA);
+            $data = simplexml_load_string($xml_str);
             //判断
             if($data->MsgType=='event'){
                 //关注
