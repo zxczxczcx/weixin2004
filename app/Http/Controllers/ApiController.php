@@ -79,7 +79,24 @@ class ApiController extends Controller
                 //关注
                 if($data->Event=='subscribe'){
 
-                    $this->attention($data);
+                    //拼凑数据
+                    $tousername = $data->ToUserName;
+                    $fromusername = $data->FromUserName;
+                    $MsgType = 'text';
+                    $content = '欢迎您的到来';
+                    
+                    $xml_attention = 
+                    '<xml>
+                        <ToUserName><![CDATA[%s]]></ToUserName>
+                        <FromUserName><![CDATA[%s]]></FromUserName>
+                        <CreateTime>%s</CreateTime>
+                        <MsgType><![CDATA[%s]]></MsgType>
+                        <Content><![CDATA[%s]]></Content>
+                    </xml>';
+        
+                    //返回数据
+                    $atten_str = sprintf($xml_attention,$tousername,$fromusername,time(),$MsgType,$content);
+                    echo  $atten_str;
                 }
             }
             
