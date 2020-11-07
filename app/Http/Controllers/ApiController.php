@@ -105,7 +105,7 @@ class ApiController extends Controller
                         <CreateTime>%s</CreateTime>
                         <MsgType><![CDATA[%s]]></MsgType>
                         <Event><![CDATA[%s]]></Event>
-                        <Conten><![CDATA[%s]]></Conten>
+                        
                     </xml>';
         
         //返回数据
