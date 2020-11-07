@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
+// use SimpleXMLElement;
 
 class ApiController extends Controller
 {
@@ -70,7 +71,18 @@ class ApiController extends Controller
 
             //记录日志
             file_put_contents('wx_event.log',$xml_str,FILE_APPEND);
-            echo '';die;
+            echo '';
+            $data = simplexml_load_string($xml_str,'SimpleXMLElement',LIBXML_NOCDATA);
+            dd($data);
+            $xml = '<xml>
+                        <ToUserName><![CDATA[gh_a6529b5ebff3]]></ToUserName>
+                        <FromUserName><![CDATA[onRjS5tAFTktpAbB0ksdiajoetZI]]></FromUserName>
+                        <CreateTime>1604664614</CreateTime>
+                        <MsgType><![CDATA[text]]></MsgType>
+                        <Content><![CDATA[1]]></Content>
+                        <MsgId>22973275060630775</MsgId>
+                    </xml>';
+            echo $xml;
 
         }else{
             echo 111;
