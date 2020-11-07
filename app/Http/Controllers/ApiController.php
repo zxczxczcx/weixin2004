@@ -85,8 +85,7 @@ class ApiController extends Controller
                     $MsgType = 'text';
                     $content = '欢迎您的到来';
                     $time = time();
-                    $xml_attention = 
-                    '<xml>
+                    $xml_attention = '<xml>
                         <ToUserName><![CDATA[%s]]></ToUserName>
                         <FromUserName><![CDATA[%s]]></FromUserName>
                         <CreateTime>%s</CreateTime>
@@ -102,7 +101,7 @@ class ApiController extends Controller
             
 
         }else{
-            echo 111;
+            echo '';
         }
     }
 
