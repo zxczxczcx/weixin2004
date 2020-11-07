@@ -79,12 +79,11 @@ class ApiController extends Controller
                 if($data->Event=='subscribe'){
                     $Content = '关注成功';
                     $result = $this->attention($data,$Content);
-                    echo  $result;
+                    return $result;
 
                 }
-                return $Content;
             }
-            
+            echo '';
 
         }else{
             echo '';
@@ -109,9 +108,8 @@ class ApiController extends Controller
                     <Content><![CDATA[%s]]></Content>
                     </xml>';
         //返回数据
-        $atten_str = sprintf($xml_attention,$tousername,$fromusername,time(),$MsgType,$Content);
-        file_put_contents('wx_log.log',$atten_str);
-        return  $atten_str;
+        echo sprintf($xml_attention,$tousername,$fromusername,time(),$MsgType,$Content);
+        
     }
 
 
