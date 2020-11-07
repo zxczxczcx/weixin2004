@@ -77,16 +77,8 @@ class ApiController extends Controller
             //判断
             if($data->MsgType=='event'){
                 if($data->Event=='subscribe'){
-                    
 
-                    $xml_attention = 
-                    '<xml>
-                        <ToUserName><![CDATA[%s]]></ToUserName>
-                        <FromUserName><![CDATA[%s]]></FromUserName>
-                        <CreateTime>%s</CreateTime>
-                        <MsgType><![CDATA[%s]]></MsgType>
-                        <Event><![CDATA[%s]]></Event>
-                    </xml>';
+                    $this->attention($data);
                 }
             }
             
@@ -95,5 +87,35 @@ class ApiController extends Controller
             echo 111;
         }
     }
+
+    /**
+     * 关注 
+     */
+    public function attention($data){
+        //拼凑数据
+        $tousername = $data->ToUserName;
+        $fromusername = $data->FromUserName;
+        $time = time();
+        $event = 'text';
+        $content = '欢迎您的到来';
+        
+        $xml_attention = 
+                    '<xml>
+                        <ToUserName><![CDATA[%s]]></ToUserName>
+                        <FromUserName><![CDATA[%s]]></FromUserName>
+                        <CreateTime>%s</CreateTime>
+                        <MsgType><![CDATA[%s]]></MsgType>
+                        <Event><![CDATA[%s]]></Event>
+                        <Conten><![CDATA[%s]]></Conten>
+                    </xml>';
+        
+        //返回数据
+        $atten_str = sprintf($xml_attention,$tousername,$fromusername,$time,$event,$content);
+        return $atten_str;
+    }
+
+
+
+
 
 }
