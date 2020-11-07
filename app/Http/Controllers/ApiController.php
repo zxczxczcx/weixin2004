@@ -76,11 +76,11 @@ class ApiController extends Controller
             dd($data);
             $xml = '<xml>
                         <ToUserName><![CDATA[gh_a6529b5ebff3]]></ToUserName>
-                        <FromUserName><![CDATA[onRjS5tAFTktpAbB0ksdiajoetZI]]></FromUserName>
-                        <CreateTime>1604664614</CreateTime>
-                        <MsgType><![CDATA[text]]></MsgType>
-                        <Content><![CDATA[1]]></Content>
-                        <MsgId>22973275060630775</MsgId>
+                        <FromUserName><![CDATA[onRjS5msz_F_SCyA5Su2GSA-Ij1c]]></FromUserName>
+                        <CreateTime>1604711004</CreateTime>
+                        <MsgType><![CDATA[event]]></MsgType>
+                        <Event><![CDATA[subscribe]]></Event>
+                        <EventKey><![CDATA[]]></EventKey>
                     </xml>';
             echo $xml;
 
