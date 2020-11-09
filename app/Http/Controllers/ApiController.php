@@ -38,7 +38,7 @@ class ApiController extends Controller
             <EventKey><![CDATA[]]></EventKey>
             </xml>";
             $xml_obj = simplexml_load_string($xml);
-            file_put_contents('wx_event.log',$xml_obj,FILE_APPEND);
+            file_put_contents('wx_event.log','aaaa',FILE_APPEND);
             die;
             //判断
             if($xml_obj->MsgType=='event'){
