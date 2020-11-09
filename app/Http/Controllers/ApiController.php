@@ -28,7 +28,7 @@ class ApiController extends Controller
         if( $tmpStr == $signature ){
             $data = file_get_contents("php://input");
             $data_res = simplexml_load_string($data,"SimplXMLement",LIBXML_NOCDATA);
-            dd($data_res);
+            file_put_contents('wx.error.log',$data_res);
             if($data_res['MsgType']=='event'){  // 事件
                 
             }
