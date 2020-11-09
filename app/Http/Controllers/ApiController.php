@@ -72,13 +72,13 @@ class ApiController extends Controller
             file_put_contents('wx_event.log',$xml_str,FILE_APPEND);
             
             // $data = simplexml_load_string($xml_str,'SimpleXMLElement',LIBXML_NOCDATA);
-            $data = simplexml_load_string($xml_str);
+            $post_obj = simplexml_load_string($HTTP_RAW_POST_DATA, 'SimpleXMLElement', LIBXML_NOCDATA);
             //判断
-            if($data->MsgType=='event'){
+            if($post_obj->MsgType=='text'){
                 //关注
-                if($data->Event=='subscribe'){
+                if($post_obj->Event=='subscribe'){
                     $Content = '关注成功';
-                    $this->attention($data,$Content);
+                    $this->attention($post_obj,$Content);
                     
                 }
             }
@@ -96,7 +96,6 @@ class ApiController extends Controller
         $tousername = $data->ToUserName;
         $fromusername = $data->FromUserName;
         $MsgType = 'text';
-        file_put_contents('wx_log.log',$tousername);
         $xml_attention = 
                     '<xml>
                         <ToUserName><![CDATA[%s]]></ToUserName>
@@ -106,7 +105,8 @@ class ApiController extends Controller
                         <Content><![CDATA[%s]]></Content>
                     </xml>';
         //返回数据
-        return sprintf($xml_attention,$tousername,$fromusername,time(),$MsgType,$Content);
+        $result = sprintf($xml_attention,$tousername,$fromusername,time(),$MsgType,$Content);
+        return ;
         
     }
 
