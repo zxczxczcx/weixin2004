@@ -6,8 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 // use SimpleXMLElement;
 
-
-
 class ApiController extends Controller
 {
     /**
@@ -19,6 +17,7 @@ class ApiController extends Controller
         $signature = $_GET["signature"];
         $timestamp = $_GET["timestamp"];
         $nonce = $_GET["nonce"];
+        
         $token = env('WX_TOKEN');
         $tmpArr = array($token, $timestamp, $nonce);
         sort($tmpArr, SORT_STRING);
@@ -26,13 +25,21 @@ class ApiController extends Controller
         $tmpStr = sha1( $tmpStr );
         
         if( $tmpStr == $signature ){
-            //获取xml 格式
-            $postArr = file_get_contents("php://input");
-            $post_obj = simplexml_load_string($postArr,"SimplXMLement",LIBXML_NOCDATA);
-            file_put_contents('wx_error.logs',$post_obj,FILE_APPEND);
-            
-        }else{
-            echo $_GET['echostr'];
+            //接受数据
+            $xml_str = file_get_contents('php://input');
+            //记录日志
+            file_put_contents('wx_event.log',$xml_str,FILE_APPEND);
+            $data = simplexml_load_string($xml_str,'SimpleXMLElement',LIBXML_NOCDATA);
+            //判断
+            if($data->MsgType=='event'){
+                //关注
+                if($data->Event=='subscribe'){
+                    $Content = '关注成功';
+                }
+                $result = $this->attention($data,$Content);
+                return $result;
+            }
+    
         }
     }
 
@@ -42,34 +49,42 @@ class ApiController extends Controller
     public function Aoken(){
         $key = 'wx:access_token';
 
-        if(empty(Redis::get($key))){
+        if(Redis::get($key)){
+            echo $key;
+        }else{
             $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".env('WX_APPID')."&secret=".env('WX_APPSECRET');
+        
             $ken = file_get_contents($url);
             $data = json_decode($ken,true);
+            
             Redis::set($key,$data['access_token']);
             Redis::expire($key,3600);
         }
-        echo Redis::get($key);
+        
     }
+
 
     /**
-     * 回复文本  WxText
+     * 关注  被动回复
      */
-    public function WxText($toUser,$fromUser,$content){
-        $template = "<xml>
-                    <ToUserName><![CDATA[%s]]></ToUserName>
-                    <FromUserName><![CDATA[%s]]></FromUserName>
-                    <CreateTime>%s</CreateTime>
-                    <MsgType><![CDATA[%s]]></MsgType>
-                    <Content><![CDATA[%s]]></Content>
-                    </xml>";
-        $info = sprintf($template, $toUser, $fromUser, time(), 'text', $content);
-        return $info;
+    public function attention($data,$Content){
+        //拼凑数据
+        $tousername = $data->ToUserName;
+        $fromusername = $data->FromUserName;
+        $MsgType = 'text';
+        
+        $xml_attention = 
+                    '<xml>
+                        <ToUserName><![CDATA[%s]]></ToUserName>
+                        <FromUserName><![CDATA[%s-Ij1c]]></FromUserName>
+                        <CreateTime>%s</CreateTime>
+                        <MsgType><![CDATA[%s]]></MsgType>
+                        <Content><![CDATA[%s]]></Content>
+                    </xml>';
+        //返回数据
+        sprintf($xml_attention,$tousername,$fromusername,time(),$MsgType,$Content);
+        
     }
-
-
-    
-
 
 
 
