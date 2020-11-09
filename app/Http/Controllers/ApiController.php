@@ -74,13 +74,10 @@ class ApiController extends Controller
             // $data = simplexml_load_string($xml_str,'SimpleXMLElement',LIBXML_NOCDATA);
             $post_obj = simplexml_load_string($HTTP_RAW_POST_DATA, 'SimpleXMLElement', LIBXML_NOCDATA);
             //判断
-            if($post_obj->MsgType=='text'){
+            if($post_obj->MsgType=='text' & $post_obj->Event=='subscribe'){
                 //关注
-                if($post_obj->Event=='subscribe'){
-                    $Content = '关注成功';
-                    $this->attention($post_obj,$Content);
-                    
-                }
+                $Content = '关注成功';
+                $this->attention($post_obj,$Content);
             }
             echo '';
         }else{
