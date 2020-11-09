@@ -68,14 +68,14 @@ class ApiController extends Controller
     /**
      * 关注  被动回复
      */
-    public function attention($data,$Content){
+    public function attention($xml_obj,$Content){
         //拼凑数据
-        $tousername = $data->FromUserName;
-        $fromusername = $data->ToUserName;
+        $tousername = $xml_obj->FromUserName;
+        $fromusername = $xml_obj->ToUserName;
         $xml_attention = 
                     '<xml>
                         <ToUserName><![CDATA[%s]]></ToUserName>
-                        <FromUserName><![CDATA[%s-Ij1c]]></FromUserName>
+                        <FromUserName><![CDATA[%s]]></FromUserName>
                         <CreateTime>%s</CreateTime>
                         <MsgType><![CDATA[%s]]></MsgType>
                         <Content><![CDATA[%s]]></Content>
