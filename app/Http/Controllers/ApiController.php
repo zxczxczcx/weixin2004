@@ -30,20 +30,7 @@ class ApiController extends Controller
             $postArr = file_get_contents("php://input");
             $post_obj = simplexml_load_string($postArr,"SimplXMLement",LIBXML_NOCDATA);
             file_put_contents('wx_error.logs',$post_obj,FILE_APPEND);
-            if($post_obj->MsgType=='Event'){  // 事件
-                //关注
-                if($post_obj->Event == 'subscribe'){
-
-                    $toUser = $post_obj->ToUserName;
-                    $fromUser   = $post_obj->FromUserName;
-                    //回复用户文本  信息  格式
-                    $msgText = 'text';
-                    $content = '欢迎关注';
-                    $this->WxText($toUser,$fromUser,$content);
-
-
-                }
-            }
+            
         }else{
             echo $_GET['echostr'];
         }
