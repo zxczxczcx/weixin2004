@@ -25,7 +25,7 @@ class ApiController extends Controller
         $tmpStr = sha1( $tmpStr );
         
         if( $tmpStr == $signature ){
-            echo '';
+            echo $_GET['echostr'];
         }else{
             echo 111;
         }
@@ -38,7 +38,7 @@ class ApiController extends Controller
         $key = 'wx:access_token';
 
         if(Redis::get($key)){
-            
+            echo $key;
         }else{
             $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".env('WX_APPID')."&secret=".env('WX_APPSECRET');
         
@@ -48,7 +48,6 @@ class ApiController extends Controller
             Redis::set($key,$data['access_token']);
             Redis::expire($key,3600);
         }
-        echo Redis::get($key);
         
     }
 
@@ -60,6 +59,7 @@ class ApiController extends Controller
         $tousername = $data->ToUserName;
         $fromusername = $data->FromUserName;
         $MsgType = 'text';
+        file_put_contents('wx_log.log',$tousername);
         $xml_attention = 
                     '<xml>
                         <ToUserName><![CDATA[%s]]></ToUserName>
@@ -69,8 +69,7 @@ class ApiController extends Controller
                         <Content><![CDATA[%s]]></Content>
                     </xml>';
         //返回数据
-        $result = sprintf($xml_attention,$tousername,$fromusername,time(),$MsgType,$Content);
-        return ;
+        return sprintf($xml_attention,$tousername,$fromusername,time(),$MsgType,$Content);
         
     }
 
