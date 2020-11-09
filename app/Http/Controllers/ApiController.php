@@ -79,7 +79,8 @@ class ApiController extends Controller
                         <Content><![CDATA[%s]]></Content>
                     </xml>';
         //返回数据
-        sprintf($xml_attention,$tousername,$fromusername,time(),'text',$Content);
+        $xml_info = sprintf($xml_attention,$tousername,$fromusername,time(),'text',$Content);
+        return $xml_info;
         
     }
 
