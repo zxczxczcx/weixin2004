@@ -33,7 +33,7 @@ class ApiController extends Controller
             //判断
             if($xml_obj->MsgType=='event'){
                 //关注
-                if($xml_objata->Event=='subscribe'){
+                if($xml_obj->Event=='subscribe'){
                     $Content = '关注成功';
                 }
                 $result = $this->attention($xml_obj,$Content);
