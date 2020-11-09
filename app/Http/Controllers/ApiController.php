@@ -10,7 +10,7 @@ class ApiController extends Controller
 {
     /**
      * Undocumented function
-     *         微信接口调用
+     *         微信接口调用     服务器上运行
      * @return void
      */
     public function checkwx(){
@@ -38,7 +38,7 @@ class ApiController extends Controller
         $key = 'wx:access_token';
 
         if(Redis::get($key)){
-            echo $key;
+            echo Redis::get($key);
         }else{
             $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".env('WX_APPID')."&secret=".env('WX_APPSECRET');
         
@@ -78,20 +78,18 @@ class ApiController extends Controller
                 //关注
                 if($data->Event=='subscribe'){
                     $Content = '关注成功';
-                    $result = $this->attention($data,$Content);
-                    return $result;
-
+                    $this->attention($data,$Content);
+                    
                 }
             }
             echo '';
-
         }else{
             echo '';
         }
     }
 
     /**
-     * 关注 
+     * 关注  被动回复
      */
     public function attention($data,$Content){
         //拼凑数据
@@ -101,14 +99,14 @@ class ApiController extends Controller
         file_put_contents('wx_log.log',$tousername);
         $xml_attention = 
                     '<xml>
-                    <ToUserName><![CDATA[%s]]></ToUserName>
-                    <FromUserName><![CDATA[%s-Ij1c]]></FromUserName>
-                    <CreateTime>%s</CreateTime>
-                    <MsgType><![CDATA[%s]]></MsgType>
-                    <Content><![CDATA[%s]]></Content>
+                        <ToUserName><![CDATA[%s]]></ToUserName>
+                        <FromUserName><![CDATA[%s-Ij1c]]></FromUserName>
+                        <CreateTime>%s</CreateTime>
+                        <MsgType><![CDATA[%s]]></MsgType>
+                        <Content><![CDATA[%s]]></Content>
                     </xml>';
         //返回数据
-        echo sprintf($xml_attention,$tousername,$fromusername,time(),$MsgType,$Content);
+        return sprintf($xml_attention,$tousername,$fromusername,time(),$MsgType,$Content);
         
     }
 
