@@ -28,17 +28,9 @@ class ApiController extends Controller
         if( $tmpStr == $signature ){
             $data = file_get_contents("php://input");
             $data_res = simplexml_load_string($data,"SimplXMLement",LIBXML_NOCDATA);
+            dd($data_res);
             if($data_res['MsgType']=='event'){  // 事件
-                if($data_res['Event']=='subscribe'){
-                    $content = '谢谢关注';
-                    echo "<xml>
-                    <ToUserName><![CDATA[".$data_res['FromUserName']."]]></ToUserName>
-                    <FromUserName><![CDATA[".$data_res['ToUserName']."]]></FromUserName>
-                    <CreateTime>".time()."</CreateTime>
-                    <MsgType><![CDATA[text]]></MsgType>
-                    <Content><![CDATA[".$content."]]></Content>
-                    </xml>";
-                }
+                
             }
         }else{
             echo $_GET['echostr'];
