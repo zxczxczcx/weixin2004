@@ -18,6 +18,6 @@ Route::get('/', function () {
 Route::get('/test','Test\TestController@test');//测试
 
 
-Route::get('/wx','ApiController@checkwx');//测试接口    测试  关注推送
+Route::post('/wx','ApiController@checkwx');//测试接口    测试  关注推送
 Route::get('/ken','ApiController@Aoken');//access_token
 
