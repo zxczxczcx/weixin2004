@@ -35,9 +35,10 @@ class ApiController extends Controller
                 //关注
                 if($xml_obj->Event=='subscribe'){
                     $Content = '关注成功';
+                    $this->attention($xml_obj,$Content);
                 }
-                $result = $this->attention($xml_obj,$Content);
-                return $result;
+                
+                
             }
         }
     }
