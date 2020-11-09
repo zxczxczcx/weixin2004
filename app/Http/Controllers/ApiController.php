@@ -71,8 +71,6 @@ class ApiController extends Controller
         //拼凑数据
         $tousername = $data->ToUserName;
         $fromusername = $data->FromUserName;
-        $MsgType = 'text';
-        
         $xml_attention = 
                     '<xml>
                         <ToUserName><![CDATA[%s]]></ToUserName>
@@ -82,7 +80,7 @@ class ApiController extends Controller
                         <Content><![CDATA[%s]]></Content>
                     </xml>';
         //返回数据
-        sprintf($xml_attention,$tousername,$fromusername,time(),$MsgType,$Content);
+        sprintf($xml_attention,$tousername,$fromusername,time(),'text',$Content);
         
     }
 
