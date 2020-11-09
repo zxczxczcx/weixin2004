@@ -90,7 +90,7 @@ class ApiController extends Controller
                     </xml>';
         //返回数据
         $result = sprintf($xml_attention,$tousername,$fromusername,time(),$MsgType,$Content);
-        return ;
+        return $result;
         
     }
 
