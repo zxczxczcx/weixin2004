@@ -38,7 +38,7 @@ class ApiController extends Controller
         $key = 'wx:access_token';
 
         if(Redis::get($key)){
-            echo Redis::get($key);
+            
         }else{
             $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".env('WX_APPID')."&secret=".env('WX_APPSECRET');
         
@@ -48,29 +48,8 @@ class ApiController extends Controller
             Redis::set($key,$data['access_token']);
             Redis::expire($key,3600);
         }
+        echo Redis::get($key);
         
-    }
-
-    /**
-     * 推送事件
-     */
-    public function event(){
-        $signature = $_GET["signature"];
-        $timestamp = $_GET["timestamp"];
-        $nonce = $_GET["nonce"];
-        
-        $token = env('WX_TOKEN');
-        $tmpArr = array($token, $timestamp, $nonce);
-        sort($tmpArr, SORT_STRING);
-        $tmpStr = implode( $tmpArr );
-        $tmpStr = sha1( $tmpStr );
-        
-        if( $tmpStr == $signature ){
-            
-            echo '';
-        }else{
-            echo '';
-        }
     }
 
     /**
