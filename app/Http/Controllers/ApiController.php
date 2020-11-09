@@ -28,7 +28,7 @@ class ApiController extends Controller
             //接受数据
             $xml = file_get_contents('php://input');
             //记录日志
-            file_put_contents('wx_event.log',$xml,FILE_APPEND);
+            //file_put_contents('wx_event.log',$xml,FILE_APPEND);
             $xml_obj = simplexml_load_string($xml,'SimpleXMLElement',LIBXML_NOCDATA);
             //判断
             if($xml_obj->MsgType=='event'){
@@ -69,8 +69,8 @@ class ApiController extends Controller
      */
     public function attention($data,$Content){
         //拼凑数据
-        $tousername = $data->ToUserName;
-        $fromusername = $data->FromUserName;
+        $tousername = $data->FromUserName;
+        $fromusername = $data->ToUserName;
         $xml_attention = 
                     '<xml>
                         <ToUserName><![CDATA[%s]]></ToUserName>
