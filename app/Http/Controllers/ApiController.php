@@ -25,7 +25,19 @@ class ApiController extends Controller
         $tmpStr = sha1( $tmpStr );
         
         if( $tmpStr == $signature ){
-            echo $_GET['echostr'];
+            //接受数据
+            $xml_str = file_get_contents('php://input');
+            //记录日志
+            file_put_contents('wx_event.log',$xml_str,FILE_APPEND);
+            
+            // $data = simplexml_load_string($xml_str,'SimpleXMLElement',LIBXML_NOCDATA);
+            $post_obj = simplexml_load_string($HTTP_RAW_POST_DATA, 'SimpleXMLElement', LIBXML_NOCDATA);
+            //判断
+            if($post_obj->MsgType=='event' & $post_obj->Event=='subscribe'){
+                //关注
+                $Content = '关注成功';
+                $this->attention($post_obj,$Content);
+            }
         }else{
             echo 111;
         }
