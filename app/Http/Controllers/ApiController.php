@@ -40,6 +40,8 @@ class ApiController extends Controller
                 if($xml_obj->Event=='subscribe'){
                     $Content = '关注成功';
                     $this->attention($xml_obj,$Content);
+
+                    file_put_contents('wx_event.log',$Content,FILE_APPEND);
                 }
                 
                 
