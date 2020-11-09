@@ -26,20 +26,19 @@ class ApiController extends Controller
         
         if( $tmpStr == $signature ){
             //接受数据
-            $xml_str = file_get_contents('php://input');
+            $xml = file_get_contents('php://input');
             //记录日志
-            file_put_contents('wx_event.log',$xml_str,FILE_APPEND);
-            $data = simplexml_load_string($xml_str,'SimpleXMLElement',LIBXML_NOCDATA);
+            file_put_contents('wx_event.log',$xml,FILE_APPEND);
+            $xml_obj = simplexml_load_string($xml,'SimpleXMLElement',LIBXML_NOCDATA);
             //判断
-            if($data->MsgType=='event'){
+            if($xml_obj->MsgType=='event'){
                 //关注
-                if($data->Event=='subscribe'){
+                if($xml_objata->Event=='subscribe'){
                     $Content = '关注成功';
                 }
-                $result = $this->attention($data,$Content);
+                $result = $this->attention($xml_obj,$Content);
                 return $result;
             }
-    
         }
     }
 
