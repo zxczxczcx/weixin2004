@@ -18,7 +18,7 @@ Route::get('/', function () {
 Route::get('/test','Test\TestController@test');//测试
 
 
-//Route::get('/wx','ApiController@checkwx');//测试接口
+Route::get('/xx','ApiController@checkwx');//测试接口
 Route::get('/ken','ApiController@Aoken');//access_token
 
 Route::get('/wx','ApiController@event');//推送事件
