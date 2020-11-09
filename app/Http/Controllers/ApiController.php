@@ -26,13 +26,20 @@ class ApiController extends Controller
         
         if( $tmpStr == $signature ){
             //接受数据
-            $xml = file_get_contents('php://input');
+            // $xml = file_get_contents('php://input');
             //记录日志
             
             // file_put_contents('wx_event.log',$xml,FILE_APPEND);
-
+            $xml="<xml><ToUserName><![CDATA[gh_a6529b5ebff3]]></ToUserName>
+            <FromUserName><![CDATA[onRjS5msz_F_SCyA5Su2GSA-Ij1c]]></FromUserName>
+            <CreateTime>1604924381</CreateTime>
+            <MsgType><![CDATA[event]]></MsgType>
+            <Event><![CDATA[subscribe]]></Event>
+            <EventKey><![CDATA[]]></EventKey>
+            </xml>";
             $xml_obj = simplexml_load_string($xml);
             file_put_contents('wx_event.log',$xml_obj,FILE_APPEND);
+            die;
             //判断
             if($xml_obj->MsgType=='event'){
                 //关注
