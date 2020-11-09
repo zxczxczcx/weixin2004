@@ -28,10 +28,8 @@ class ApiController extends Controller
             //接受数据
             $xml_str = file_get_contents('php://input');
             //记录日志
-            file_put_contents('wx_event.log',$xml_str,FILE_APPEND);
-            
-            // $data = simplexml_load_string($xml_str,'SimpleXMLElement',LIBXML_NOCDATA);
-            $post_obj = simplexml_load_string($HTTP_RAW_POST_DATA, 'SimpleXMLElement', LIBXML_NOCDATA);
+            file_put_contents('wx_event.log',$xml_str,FILE_APPEND);         //写日志  查看存入值
+            $post_obj = simplexml_load_string($xml_str, 'SimpleXMLElement', LIBXML_NOCDATA);
             //判断
             if($post_obj->MsgType=='event' & $post_obj->Event=='subscribe'){
                 //关注
