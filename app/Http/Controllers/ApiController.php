@@ -108,33 +108,25 @@ class ApiController extends Controller
         //自定义菜单   获取token
         $access_token = $this->Aoken();
         // echo $access_token;die;
-        
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$access_token;
-
+        
         $weather_url = 'https://devapi.qweather.com/v7/weather/now?location=101010100&key=ef14d67e99d74715b691c012e9ff4285';
         $menu = [
             'button'=>[
-                [
+                
                     'type'=>'click',
                     'name'=>'天气',
                     'key'=>'V1001_TODAY_MUSIC',
-                ],
-                [
-                    'type'=>'click',
-                    'name'=>'aa',
-                    'key'=>'V1001_TODAY_SINGER',
-                ]
+                
             ],
         ];
             // dd($menu);
         $client = new Client;
-        
-        
         // echo $url;die;
-        $response = $client->request('post',$url,['verify'=>false,'bady'=>json_encode($menu)]);
-        
-        $data = $response->getBody();
-        dd($data);
+        $response = $client->request('POST',$url,['verify'=>false,'body'=>json_encode($menu)]);
+        // dd($custom_data);
+        $data = $response->getbody();
+        print_r($data);
         
     }
 
