@@ -131,7 +131,7 @@ class ApiController extends Controller
         
         
         // echo $url;die;
-        $response = $client->request('POST',$url,['verify'=>false,'bady'=>json_encode($menu)]);
+        $response = $client->request('post',$url,['verify'=>false,'bady'=>json_encode($menu)]);
         
         $data = $response->getBody();
         dd($data);
