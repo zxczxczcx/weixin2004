@@ -49,19 +49,29 @@ class ApiController extends Controller
                 $client = new Client;
                 $respones_json = $client->request('get',$user_url,['verify'=>false]);
                 $respones_obj = json_decode($respones_json,true);
-                file_put_contents('wx_event.log',$respones_obj->sex,FILE_APPEND);
+                
 
                 
             }
             //文本多选模式   
             switch($xml_obj->Content){
                 case'天气';
-                $this->weather();
+                $weather = $this->weather($xml_obj);
+                return $weather;
+                break; 
+
             }
         }
     }
 
-    public function weather(){
+    public function weather($xml_obj){
+        $url = 'https://devapi.qweather.com/v7/weather/now?location=101010100&key=ef14d67e99d74715b691c012e9ff4285';
+
+        $weather = file_get_contents($url);
+        file_put_contents('wx_event.log',$weather,FILE_APPEND);
+
+        
+
         return 132;
     }
 
