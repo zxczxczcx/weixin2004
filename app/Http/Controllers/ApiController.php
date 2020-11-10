@@ -54,11 +54,15 @@ class ApiController extends Controller
                 
             }
             //文本多选模式   
-            switch($xml_obj->MsgType=='text'){
-                
-
+            switch($xml_obj->Content){
+                case'天气';
+                $this->weather();
             }
         }
+    }
+
+    public function weather(){
+        return 132;
     }
 
     /**
@@ -108,25 +112,39 @@ class ApiController extends Controller
         //自定义菜单   获取token
         $access_token = $this->Aoken();
         // echo $access_token;die;
-        $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$access_token;
+        $url =  'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$access_token;
         
         $weather_url = 'https://devapi.qweather.com/v7/weather/now?location=101010100&key=ef14d67e99d74715b691c012e9ff4285';
         $menu = [
-            'button'=>[
+            "button"=>[
+                [	
+                    "type"=>"click",
+                    "name"=>"天气",
+                    "key"=>"V1001_TODAY_MUSIC"
+                ],
+                [
+                    'name'=>'菜单',
+                    'sub_button'=>[
+                        "type"=>"view",
+                        "name"=>"百度",
+                        "url"=>"http://www.baidu.com"
+                    ]
+                    
+                ],
                 
-                    'type'=>'click',
-                    'name'=>'天气',
-                    'key'=>'V1001_TODAY_MUSIC',
-                
-            ],
+            ]
+            
         ];
-            // dd($menu);
+            // dd($menu);die;
         $client = new Client;
-        // echo $url;die;
-        $response = $client->request('POST',$url,['verify'=>false,'body'=>json_encode($menu)]);
-        // dd($custom_data);
+        $response = $client->request('post',$url,[
+            'verify'=>false,
+            'body'=>json_encode($menu,JSON_UNESCAPED_UNICODE)
+            // ,JSON_UNESCAPED_UNICODE
+        ]);
         $data = $response->getbody();
-        print_r($data);
+        echo $data;
+        
         
     }
 

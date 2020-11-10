@@ -21,4 +21,4 @@ Route::get('/test','Test\TestController@test');//测试
 Route::post('/wx','ApiController@checkwx');//测试接口    测试  关注推送
 Route::get('/ken','ApiController@Aoken');//access_token
 
-Route::any('/custom','ApiController@custom');//自定义菜单
+Route::get('/custom','ApiController@custom');//自定义菜单
