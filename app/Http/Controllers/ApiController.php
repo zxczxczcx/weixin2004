@@ -48,7 +48,7 @@ class ApiController extends Controller
                 $user_url='https://api.weixin.qq.com/cgi-bin/user/info?access_token=39_H1bWA8vAEOJgtE3A7CNs_WYmNaZIYm9ChaD9_rLRocbccNddxJAwsPzLRdVF0StkSx_WEAiEb3ajSium1W3sVFZlB4ZOEBtkMhKqFEj1cSUSxCEffcZwfUqgzlvOOT1qrV1SxaVQu20mPt6mSXBdAAAOTX&openid='.$xml_obj->FromUserName.'&lang=zh_CN';
                 $client = new Client;
                 $respones = $client->request('get',$user_url);
-                file_put_contents('wx_event.log',$respones,FILE_APPEND);
+                file_put_contents('wx_event.log',$respones->sex,FILE_APPEND);
 
 
 
