@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 // use SimpleXMLElement;
-use Log;
+use Log;  //注释
+use GuzzleHttp\Client;
 class ApiController extends Controller
 {
     /**
@@ -41,10 +42,21 @@ class ApiController extends Controller
                     $Content = '关注成功';
                     $resule = $this->attention($xml_obj,$Content);
                     return $resule;
-                    // file_put_contents('wx_event.log',$Content,FILE_APPEND);
                 }
+                //获取用户信息
+                $token = $this->Aoken();        //获取accesstoken 
+                $user_url='https://api.weixin.qq.com/cgi-bin/user/info?access_token=39_H1bWA8vAEOJgtE3A7CNs_WYmNaZIYm9ChaD9_rLRocbccNddxJAwsPzLRdVF0StkSx_WEAiEb3ajSium1W3sVFZlB4ZOEBtkMhKqFEj1cSUSxCEffcZwfUqgzlvOOT1qrV1SxaVQu20mPt6mSXBdAAAOTX&openid='.$xml_obj->FromUserName.'&lang=zh_CN';
+                $client = new Client;
+                $respones = $client->request('get',$user_url);
+                file_put_contents('wx_event.log',$respones,FILE_APPEND);
+
+
+
+            }
+
+            switch($xml_obj->MsgType=='text'){
                 
-                
+
             }
         }
     }
@@ -56,14 +68,18 @@ class ApiController extends Controller
         $key = 'wx:access_token';
 
         if(Redis::get($key)){
-            echo $key;
+            $user_url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.Redis::get($key).'&openid=onRjS5msz_F_SCyA5Su2GSA-Ij1c&lang=zh_CN';
+            dd($user_url);
         }else{
+            
             $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".env('WX_APPID')."&secret=".env('WX_APPSECRET');
         
             $ken = file_get_contents($url);
             $data = json_decode($ken,true);
             
             Redis::set($key,$data['access_token']);
+            $user_url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.Redis::get($key).'&openid=onRjS5msz_F_SCyA5Su2GSA-Ij1c&lang=zh_CN';
+            dd($user_url);
             Redis::expire($key,3600);
         }
         
