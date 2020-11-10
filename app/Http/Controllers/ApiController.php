@@ -51,10 +51,9 @@ class ApiController extends Controller
                 $respones_obj = json_decode($respones_json,true);
                 file_put_contents('wx_event.log',$respones_obj->sex,FILE_APPEND);
 
-
-
+                
             }
-
+            //文本多选模式   
             switch($xml_obj->MsgType=='text'){
                 
 
@@ -68,22 +67,17 @@ class ApiController extends Controller
     public function Aoken(){
         $key = 'wx:access_token';
 
-        if(Redis::get($key)){
-            $user_url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.Redis::get($key).'&openid=onRjS5msz_F_SCyA5Su2GSA-Ij1c&lang=zh_CN';
-            dd($user_url);
-        }else{
-            
+        if(empty(Redis::get($key))){
             $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".env('WX_APPID')."&secret=".env('WX_APPSECRET');
-        
+            // echo $url;die;
             $ken = file_get_contents($url);
             $data = json_decode($ken,true);
             
             Redis::set($key,$data['access_token']);
-            $user_url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.Redis::get($key).'&openid=onRjS5msz_F_SCyA5Su2GSA-Ij1c&lang=zh_CN';
-            dd($user_url);
+            
             Redis::expire($key,3600);
         }
-        
+        return Redis::get($key);
     }
 
 
@@ -105,6 +99,42 @@ class ApiController extends Controller
         //返回数据
         $xml_info = sprintf($xml_attention,$tousername,$fromusername,time(),'text',$Content);
         return $xml_info;
+        
+    }
+
+    /**自定义菜单 */
+    public function custom(){
+        
+        //自定义菜单   获取token
+        $access_token = $this->Aoken();
+        // echo $access_token;die;
+        
+        $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$access_token;
+
+        $weather_url = 'https://devapi.qweather.com/v7/weather/now?location=101010100&key=ef14d67e99d74715b691c012e9ff4285';
+        $menu = [
+            'button'=>[
+                [
+                    'type'=>'click',
+                    'name'=>'天气',
+                    'key'=>'V1001_TODAY_MUSIC',
+                ],
+                [
+                    'type'=>'click',
+                    'name'=>'aa',
+                    'key'=>'V1001_TODAY_SINGER',
+                ]
+            ],
+        ];
+            // dd($menu);
+        $client = new Client;
+        
+        
+        // echo $url;die;
+        $response = $client->request('POST',$url,['verify'=>false,'bady'=>json_encode($menu)]);
+        
+        $data = $response->getBody();
+        dd($data);
         
     }
 
