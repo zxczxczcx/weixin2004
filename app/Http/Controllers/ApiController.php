@@ -67,8 +67,8 @@ class ApiController extends Controller
     /**天气   和风 */
     public function weather($xml_obj){
         $url = 'https://devapi.qweather.com/v7/weather/now?location=101010100&key=ef14d67e99d74715b691c012e9ff4285';
-
-        $weather_url = file_get_contents($url);
+        $client = new Client;
+        $weather_url = $client->request('get',$url,['verify'=>false]);
         
         file_put_contents('wx_event.log',$weather_url,FILE_APPEND);
 
