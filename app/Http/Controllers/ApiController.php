@@ -68,7 +68,8 @@ class ApiController extends Controller
         $url = 'https://devapi.qweather.com/v7/weather/now?location=101010100&key=ef14d67e99d74715b691c012e9ff4285';
 
         $weather = file_get_contents($url);
-        file_put_contents('wx_event.log',$weather,FILE_APPEND);
+        $data = json_decode($weather);
+        file_put_contents('wx_event.log',$data,FILE_APPEND);
 
 
 
