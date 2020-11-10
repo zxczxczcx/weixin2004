@@ -70,9 +70,9 @@ class ApiController extends Controller
         $weather = file_get_contents($url);
         file_put_contents('wx_event.log',$weather,FILE_APPEND);
 
-        
 
-        return 132;
+
+        
     }
 
     /**
