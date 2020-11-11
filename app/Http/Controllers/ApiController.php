@@ -72,7 +72,7 @@ class ApiController extends Controller
                     $userModel::insertGetId($data);
                     return $resule;     //关注成功  返回值
                 }
-                //菜单回复
+                //自定义 菜单回复
                 switch($xml_obj->Event){
                     case'CLICK';
                         $count_str = $this->weather();          //天气 返回参数
@@ -82,6 +82,7 @@ class ApiController extends Controller
                 }
                 
             }else if($xml_obj->MsgType=='text'){
+                //信息 回复
                 switch($xml_obj->Content){
                     case'天气';
                         $count_str = $this->weather();          //天气 返回参数
@@ -89,6 +90,10 @@ class ApiController extends Controller
                         echo $weather;
                     break; 
                     case'你好';
+                        $Content = '您好系统维护中，请稍后再试';
+                        $weather = $this->attention($xml_obj,$Content);           //xml  返回微信
+                        echo $weather;
+                    break;
 
 
                 }
@@ -189,7 +194,6 @@ class ApiController extends Controller
         ]);
         $data = $response->getbody();
         echo $data;
-        
         
     }
 
