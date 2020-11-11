@@ -12,7 +12,7 @@ use App\Model\UserModel;
 
 class ApiController extends Controller
 {
-    protected $xml;
+    protected $xml_obj;
     /**
      * Undocumented function
      *         微信接口调用     服务器上运行
@@ -38,8 +38,10 @@ class ApiController extends Controller
             //记录日志
             
             file_put_contents('wx_event.log',$xml,FILE_APPEND);
-            $xml_obj = simplexml_load_string($xml);
-            $this->xml = $xml_obj;
+            $xml_obj = simplexml_load_string($xml);         //将xml文件转换成对象
+
+            $this->xml_obj = $xml_obj;
+
             //判断
             if($xml_obj->MsgType=='event'){
                 //关注
@@ -67,7 +69,7 @@ class ApiController extends Controller
                     ];
                     $userModel = new UserModel;
                     $userModel::insertGetId($data);
-                    return $resule;
+                    return $resule;     //关注成功  返回值
                 }
                 
             }else if($xml_obj->MsgType=='text'){
@@ -123,9 +125,8 @@ class ApiController extends Controller
     /**
      *  被动回复 发送文本
      */
-    public function attention($Content){
+    public function attention($xml_obj,$Content){
         //拼凑数据
-        $xml_obj = $this->xml;
         $tousername = $xml_obj->FromUserName;
         $fromusername = $xml_obj->ToUserName;
         $xml_attention = 
@@ -182,8 +183,6 @@ class ApiController extends Controller
         
         
     }
-
-    
 
 
 
