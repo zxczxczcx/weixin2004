@@ -50,16 +50,18 @@ class ApiController extends Controller
                 $respones_json = $client->request('get',$user_url,['verify'=>false]);
                 $respones_obj = json_decode($respones_json,true);
                 
-
                 
             }
-            //文本多选模式   
-            switch($xml_obj->Content){
-                case'天气';
-                $weather = $this->weather($xml_obj);
-                return $weather;
-                break; 
+            
+            //文本多选模式  
+            if($xml_obj->MsgType=='text'){
+                switch($xml_obj->Content){
+                    case'天气';
+                    $weather = $this->weather($xml_obj);
+                    return $weather;
+                    break; 
 
+                }
             }
         }
     }
