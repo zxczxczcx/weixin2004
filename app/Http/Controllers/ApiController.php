@@ -42,17 +42,14 @@ class ApiController extends Controller
                     $Content = '关注成功';
                     $resule = $this->attention($xml_obj,$Content);
                     return $resule;
+                    //添加用户信息
+                    
+                    $this->user($xml_obj);
                 }
-                //获取用户信息
-                $token = $this->Aoken();        //获取accesstoken 
-                $user_url='https://api.weixin.qq.com/cgi-bin/user/info?access_token=39_H1bWA8vAEOJgtE3A7CNs_WYmNaZIYm9ChaD9_rLRocbccNddxJAwsPzLRdVF0StkSx_WEAiEb3ajSium1W3sVFZlB4ZOEBtkMhKqFEj1cSUSxCEffcZwfUqgzlvOOT1qrV1SxaVQu20mPt6mSXBdAAAOTX&openid='.$xml_obj->FromUserName.'&lang=zh_CN';
-                $client = new Client;
-                $respones_json = $client->request('get',$user_url,['verify'=>false]);
-                $respones_obj = json_decode($respones_json,true);
                 
                 
             }
-            
+
             //文本多选模式  
             if($xml_obj->MsgType=='text'){
                 switch($xml_obj->Content){
@@ -63,14 +60,26 @@ class ApiController extends Controller
 
                 }
             }
+
         }
     }
 
+    //用户信息
+    public function user($xml_obj){
+        $access_token = $this->access_token;
+        $fromusername = $xml_obj->FromUserName;
+        $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$fromusername.'&lang=zh_CN';
+        echo $url;
+    }
+
+
     /**天气   和风 */
-    public function weather($xml_obj){
+    public function weather(){
         $url = 'https://devapi.qweather.com/v7/weather/now?location=101010100&key=ef14d67e99d74715b691c012e9ff4285';
         $client = new Client;
-        $weather_url = $client->request('get',$url,['verify'=>false]);
+        $weather_url = file_get_contents($url);
+        // $weather_url = $client->request('get',$url,['verify'=>false]);
+        dd($weather_url);
         
         file_put_contents('wx_event.log',$weather_url,FILE_APPEND);
 
