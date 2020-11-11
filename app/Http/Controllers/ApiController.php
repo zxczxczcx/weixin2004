@@ -48,7 +48,8 @@ class ApiController extends Controller
                     // dd($access_token);
                     // $fromusername = $xml_obj->FromUserName;
                     $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$xml_obj->FromUserName.'&lang=zh_CN';
-                    echo $url;
+                    $user_json = file_get_contents($url);
+                    file_put_contents('wx_event.log',$user_json,FILE_APPEND);
                     
                 }
                 
