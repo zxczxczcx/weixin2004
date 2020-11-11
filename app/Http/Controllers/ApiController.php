@@ -39,10 +39,6 @@ class ApiController extends Controller
             if($xml_obj->MsgType=='event'){
                 //关注
                 if($xml_obj->Event=='subscribe'){
-                    $Content = '关注成功';
-                    $resule = $this->attention($xml_obj,$Content);
-                    return $resule;
-
                     //添加用户信息
                     $access_token = $this->Aoken();
                     // dd($access_token);
@@ -50,6 +46,13 @@ class ApiController extends Controller
                     $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$xml_obj->FromUserName.'&lang=zh_CN';
                     $user_json = file_get_contents($url);
                     file_put_contents('wx_event.log',$user_json,FILE_APPEND);
+
+
+                    $Content = '关注成功';
+                    $resule = $this->attention($xml_obj,$Content);
+                    return $resule ;
+
+                    
                     
                 }
                 
