@@ -44,7 +44,24 @@ class ApiController extends Controller
                 if($xml_obj->Event=='subscribe'){
                     //用户信息
                     $FromUserName = $xml_obj->FromUserName;
-                    $this->useradd($FromUserName);
+                    $access_token = $this->Aoken();
+                    // dd($access_token);
+                    // $fromusername = $xml_obj->FromUserName;
+                    $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$FromUserName.'&lang=zh_CN';
+                    $user_json = file_get_contents($url);
+                    $user_data = json_decode($user_json,true);
+                $data = [
+                    'nickname'=>$user_data['nickname'],
+                    'sex'=>$user_data['sex'],
+                    'country'=>$user_data['country'],
+                    'headimgurl'=>$user_data['headimgurl'],
+                    'add_time'=>$user_data['subscribe_time'],
+                    'openid'=>$user_data['openid'],
+                ];
+                
+                $userModel = new UserModel;
+                $userModel::insertGetId($data);
+                
                     
                     //关注
                     $Content = '关注成功';
@@ -90,22 +107,8 @@ class ApiController extends Controller
 
     /**添加用户 */
     public function useradd($FromUserName){
-        $access_token = $this->Aoken();
-                    // dd($access_token);
-                    // $fromusername = $xml_obj->FromUserName;
-                    $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$FromUserName.'&lang=zh_CN';
-                    $user_json = file_get_contents($url);
-                    $user_data = json_decode($user_json,true);
-                $data = [
-                    'nickname'=>$user_data['nickname'],
-                    'sex'=>$user_data['sex'],
-                    'country'=>$user_data['country'],
-                    'headimgurl'=>$user_data['headimgurl'],
-                    'add_time'=>$user_data['subscribe_time'],
-                    'openid'=>$user_data['openid'],
-                ];
-                $userModel = new UserModel;
-                $userModel::insertGetId($data);
+        // dd($FromUserName);
+        
     }
 
     /**
