@@ -47,12 +47,12 @@ class ApiController extends Controller
 
                     //用户信息
                     $FromUserName = $xml_obj->FromUserName;
-                    $access_token = $this->Aoken();
+                    $access_token = $this->Aoken();             //获取access_token
                     // dd($access_token);
                     // $fromusername = $xml_obj->FromUserName;
                     $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$FromUserName.'&lang=zh_CN';
-                    $user_json = file_get_contents($url);
-                    $user_data = json_decode($user_json,true);
+                    $user_json = file_get_contents($url);                 //发送地址  接回来 json 字符串
+                    $user_data = json_decode($user_json,true);          //转换成数组
 
                     $data = [
                         'nickname'=>$user_data['nickname'],
@@ -64,52 +64,41 @@ class ApiController extends Controller
                     ];
                     $userModel = new UserModel;
                     $userModel::insertGetId($data);
-                    
                     return $resule;
-
                 }
                 
-                
-            }
-
-            //文本多选模式  
-            if($xml_obj->MsgType=='text'){
+            }else if($xml_obj->MsgType=='text'){
                 switch($xml_obj->Content){
                     case'天气';
-                    $weather = $this->weather($xml_obj);
-                    return $weather;
+                        $count_str = $this->weather();          //天气 返回参数
+                        $weather = $this->attention($xml_obj,$count_str);           //xml  返回微信
+                        echo $weather;
+                        
                     break; 
 
                 }
             }
 
         }
+
     }
-
     
-
 
     /**天气   和风 */
     public function weather(){
-        $url = 'https://devapi.qweather.com/v7/weather/now?location=101010100&key=ef14d67e99d74715b691c012e9ff4285';
-        $client = new Client;
+        $url = 'https://devapi.qweather.com/v7/weather/now?location=101010100&key=ef14d67e99d74715b691c012e9ff4285&gzip=n';
         $weather_url = file_get_contents($url);
+        // $weather_url = '{"code":"200","updateTime":"2020-11-11T11:26+08:00","fxLink":"http://hfx.link/2ax1","now":{"obsTime":"2020-11-11T10:59+08:00","temp":"10","feelsLike":"8","icon":"100","text":"晴","wind360":"90","windDir":"东风","windScale":"1","windSpeed":"5","humidity":"49","precip":"0.0","pressure":"1027","vis":"6","cloud":"10","dew":"1"},"refer":{"sources":["Weather China"],"license":["no commercial use"]}}';
         // $weather_url = $client->request('get',$url,['verify'=>false]);
-        dd($weather_url);
+        $weather_url = json_decode($weather_url,true);
+        $weather_data = $weather_url['now'];
         
-        file_put_contents('wx_event.log',$weather_url,FILE_APPEND);
-
-
-
-        
-    }
-
-    /**添加用户 */
-    public function useradd($FromUserName){
-        // dd($FromUserName);
+        $count_str = '天气：'.$weather_data['text'].';风向：'.$weather_data['windDir'].';风力等级：'.$weather_data['windScale'];
+        return $count_str;
         
     }
 
+    
     /**
      * access_token
      */
@@ -131,7 +120,7 @@ class ApiController extends Controller
 
 
     /**
-     * 关注  被动回复
+     *  被动回复 发送文本
      */
     public function attention($xml_obj,$Content){
         //拼凑数据
@@ -148,7 +137,6 @@ class ApiController extends Controller
         //返回数据
         $xml_info = sprintf($xml_attention,$tousername,$fromusername,time(),'text',$Content);
         return $xml_info;
-        
     }
 
 
