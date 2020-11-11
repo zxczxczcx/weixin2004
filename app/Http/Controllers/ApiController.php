@@ -42,9 +42,14 @@ class ApiController extends Controller
                     $Content = '关注成功';
                     $resule = $this->attention($xml_obj,$Content);
                     return $resule;
+
                     //添加用户信息
+                    $access_token = $this->Aoken();
+                    // dd($access_token);
+                    // $fromusername = $xml_obj->FromUserName;
+                    $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$xml_obj->FromUserName.'&lang=zh_CN';
+                    echo $url;
                     
-                    $this->user($xml_obj);
                 }
                 
                 
@@ -64,13 +69,7 @@ class ApiController extends Controller
         }
     }
 
-    //用户信息
-    public function user($xml_obj){
-        $access_token = $this->access_token;
-        $fromusername = $xml_obj->FromUserName;
-        $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$fromusername.'&lang=zh_CN';
-        echo $url;
-    }
+    
 
 
     /**天气   和风 */

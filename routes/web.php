@@ -22,4 +22,4 @@ Route::post('/wx','ApiController@checkwx');//测试接口    测试  关注推�
 Route::get('/ken','ApiController@Aoken');//access_token
 
 Route::get('/custom','ApiController@custom');//自定义菜单
-Route::get('/cs','ApiController@user');//测试
+// Route::get('/cs','ApiController@Useradd');//测试
