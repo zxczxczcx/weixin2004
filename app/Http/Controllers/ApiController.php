@@ -94,7 +94,7 @@ class ApiController extends Controller
         $weather_url = json_decode($weather_url,true);
         $weather_data = $weather_url['now'];
         
-        $count_str = '日期'.$weather_data['obsTime'].'天气：'.$weather_data['text'].';风向：'.$weather_data['windDir'].';风力等级：'.$weather_data['windScale'];
+        $count_str = '日期：'.date('Y-m-d H:i:s',time()).'天气：'.$weather_data['text'].';风向：'.$weather_data['windDir'].';风力等级：'.$weather_data['windScale'];
         return $count_str;
         
     }
