@@ -77,6 +77,8 @@ class ApiController extends Controller
                         $weather = $this->attention($xml_obj,$count_str);           //xml  返回微信
                         echo $weather;
                     break; 
+                    case'你好';
+
 
                 }
             }
@@ -94,7 +96,7 @@ class ApiController extends Controller
         $weather_url = json_decode($weather_url,true);
         $weather_data = $weather_url['now'];
         
-        $count_str = '日期：'.date('Y-m-d H:i:s',time()).'天气：'.$weather_data['text'].';风向：'.$weather_data['windDir'].';风力等级：'.$weather_data['windScale'];
+        $count_str = '日期：'.date('Y-m-d H:i:s',time()+8).'天气：'.$weather_data['text'].';风向：'.$weather_data['windDir'].';风力等级：'.$weather_data['windScale'];
         return $count_str;
         
     }
@@ -121,8 +123,9 @@ class ApiController extends Controller
     /**
      *  被动回复 发送文本
      */
-    public function attention($xml_obj,$Content){
+    public function attention($Content){
         //拼凑数据
+        $xml_obj = $this->xml;
         $tousername = $xml_obj->FromUserName;
         $fromusername = $xml_obj->ToUserName;
         $xml_attention = 
