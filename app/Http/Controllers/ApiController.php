@@ -73,13 +73,17 @@ class ApiController extends Controller
                     return $resule;     //关注成功  返回值
                 }
                 //自定义 菜单回复
-                switch($xml_obj->Event){
-                    case'CLICK';
-                        $count_str = $this->weather();          //天气 返回参数
-                        $weather = $this->attention($xml_obj,$count_str);           //xml  返回微信
-                        echo $weather;
-                    break;
+                if($xml_obj->Event=='CLICK'){
+                    switch($xml_obj->EventKey){
+                        case'V1001_TODAY_MUSIC';
+                            $count_str = $this->weather();          //天气 返回参数
+                            $weather = $this->attention($xml_obj,$count_str);           //xml  返回微信
+                            echo $weather;
+                        break;
+                        
+                    }
                 }
+                
                 
             }else if($xml_obj->MsgType=='text'){
                 //信息 回复
