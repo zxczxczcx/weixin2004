@@ -178,6 +178,10 @@ class ApiController extends Controller
                         "type"=>"view",
                         "name"=>"百度",
                         "url"=>"http://www.baidu.com"
+                    ],[
+                        "type"=>"click",
+                        "name"=>"签到",
+                        "key"=>"SIGN_IN"
                     ]
                     
                 ],
