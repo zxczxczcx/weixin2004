@@ -42,6 +42,11 @@ class ApiController extends Controller
             if($xml_obj->MsgType=='event'){
                 //关注
                 if($xml_obj->Event=='subscribe'){
+                    
+                    //关注
+                    $Content = '关注成功';
+                    $resule = $this->attention($xml_obj,$Content);
+
                     //用户信息
                     $FromUserName = $xml_obj->FromUserName;
                     $access_token = $this->Aoken();
@@ -61,11 +66,8 @@ class ApiController extends Controller
                 
                 $userModel = new UserModel;
                 $userModel::insertGetId($data);
-                
-                    
-                    //关注
-                    $Content = '关注成功';
-                    $resule = $this->attention($xml_obj,$Content);
+
+
                     return $resule;
 
                 }
