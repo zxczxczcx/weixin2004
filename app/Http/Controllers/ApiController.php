@@ -52,6 +52,7 @@ class ApiController extends Controller
 
                     //用户信息
                     $FromUserName = $xml_obj->FromUserName;
+
                     $access_token = $this->Aoken();             //获取access_token
                     // dd($access_token);
                     // $fromusername = $xml_obj->FromUserName;
@@ -70,6 +71,14 @@ class ApiController extends Controller
                     $userModel = new UserModel;
                     $userModel::insertGetId($data);
                     return $resule;     //关注成功  返回值
+                }
+                //菜单回复
+                switch($xml_obj->Event){
+                    case'CLICK';
+                        $count_str = $this->weather();          //天气 返回参数
+                        $weather = $this->attention($xml_obj,$count_str);           //xml  返回微信
+                        echo $weather;
+                    break;
                 }
                 
             }else if($xml_obj->MsgType=='text'){
