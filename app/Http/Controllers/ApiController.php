@@ -12,6 +12,7 @@ use App\Model\UserModel;
 
 class ApiController extends Controller
 {
+    protected $xml;
     /**
      * Undocumented function
      *         微信接口调用     服务器上运行
@@ -33,10 +34,12 @@ class ApiController extends Controller
             
             //接受数据
             $xml = file_get_contents('php://input');
+
             //记录日志
             
             file_put_contents('wx_event.log',$xml,FILE_APPEND);
             $xml_obj = simplexml_load_string($xml);
+            $this->xml = $xml_obj;
             //判断
             if($xml_obj->MsgType=='event'){
                 //关注
@@ -73,7 +76,6 @@ class ApiController extends Controller
                         $count_str = $this->weather();          //天气 返回参数
                         $weather = $this->attention($xml_obj,$count_str);           //xml  返回微信
                         echo $weather;
-                        
                     break; 
 
                 }
@@ -83,7 +85,6 @@ class ApiController extends Controller
 
     }
     
-
     /**天气   和风 */
     public function weather(){
         $url = 'https://devapi.qweather.com/v7/weather/now?location=101010100&key=ef14d67e99d74715b691c012e9ff4285&gzip=n';
@@ -93,12 +94,11 @@ class ApiController extends Controller
         $weather_url = json_decode($weather_url,true);
         $weather_data = $weather_url['now'];
         
-        $count_str = '天气：'.$weather_data['text'].';风向：'.$weather_data['windDir'].';风力等级：'.$weather_data['windScale'];
+        $count_str = '日期'.$weather_data['obsTime'].'天气：'.$weather_data['text'].';风向：'.$weather_data['windDir'].';风力等级：'.$weather_data['windScale'];
         return $count_str;
         
     }
 
-    
     /**
      * access_token
      */
@@ -117,7 +117,6 @@ class ApiController extends Controller
         }
         return Redis::get($key);
     }
-
 
     /**
      *  被动回复 发送文本
@@ -139,7 +138,6 @@ class ApiController extends Controller
         return $xml_info;
     }
 
-
     /**自定义菜单 */
     public function custom(){
         
@@ -148,7 +146,7 @@ class ApiController extends Controller
         // echo $access_token;die;
         $url =  'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$access_token;
         
-        $weather_url = 'https://devapi.qweather.com/v7/weather/now?location=101010100&key=ef14d67e99d74715b691c012e9ff4285';
+        // $weather_url = 'https://devapi.qweather.com/v7/weather/now?location=101010100&key=ef14d67e99d74715b691c012e9ff4285';
         $menu = [
             "button"=>[
                 [	
@@ -174,7 +172,7 @@ class ApiController extends Controller
         $response = $client->request('post',$url,[
             'verify'=>false,
             'body'=>json_encode($menu,JSON_UNESCAPED_UNICODE)
-            // ,JSON_UNESCAPED_UNICODE
+            // JSON_UNESCAPED_UNICODE
         ]);
         $data = $response->getbody();
         echo $data;
@@ -182,6 +180,7 @@ class ApiController extends Controller
         
     }
 
+    
 
 
 
