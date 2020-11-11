@@ -37,12 +37,10 @@ class ApiController extends Controller
             
             file_put_contents('wx_event.log',$xml,FILE_APPEND);
             $xml_obj = simplexml_load_string($xml);
-            
             //判断
             if($xml_obj->MsgType=='event'){
                 //关注
                 if($xml_obj->Event=='subscribe'){
-                    
                     //关注
                     $Content = '关注成功';
                     $resule = $this->attention($xml_obj,$Content);
@@ -55,19 +53,18 @@ class ApiController extends Controller
                     $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$FromUserName.'&lang=zh_CN';
                     $user_json = file_get_contents($url);
                     $user_data = json_decode($user_json,true);
-                $data = [
-                    'nickname'=>$user_data['nickname'],
-                    'sex'=>$user_data['sex'],
-                    'country'=>$user_data['country'],
-                    'headimgurl'=>$user_data['headimgurl'],
-                    'add_time'=>$user_data['subscribe_time'],
-                    'openid'=>$user_data['openid'],
-                ];
-                
-                $userModel = new UserModel;
-                $userModel::insertGetId($data);
 
-
+                    $data = [
+                        'nickname'=>$user_data['nickname'],
+                        'sex'=>$user_data['sex'],
+                        'country'=>$user_data['country'],
+                        'headimgurl'=>$user_data['headimgurl'],
+                        'add_time'=>$user_data['subscribe_time'],
+                        'openid'=>$user_data['openid'],
+                    ];
+                    $userModel = new UserModel;
+                    $userModel::insertGetId($data);
+                    
                     return $resule;
 
                 }
