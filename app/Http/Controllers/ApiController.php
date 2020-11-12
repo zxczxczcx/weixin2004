@@ -45,28 +45,34 @@ class ApiController extends Controller
                 //关注
                 if($xml_obj->Event=='subscribe'){
                     
-                    //关注 方法
-                    $Content = '关注成功';
-                    $resule = $this->attention($xml_obj,$Content);
+                    $wx_user = UserModel::where(['openid'=>$xml_obj->FromUserName])->first();
+                    if($wx_user){
+                        $Content = '谢谢再次关注';
+                    }else{
+                        //关注 方法
+                        $Content = '关注成功';
+                        //用户信息
+                        $access_token = $this->Aoken();             //获取access_token
+                        // dd($access_token);
+                        // $fromusername = $xml_obj->FromUserName;
+                        $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$xml_obj->FromUserName.'&lang=zh_CN';
+                        $user_json = file_get_contents($url);                 //发送地址  接回来 json 字符串
+                        $user_data = json_decode($user_json,true);          //转换成数组
 
-                    //用户信息
-                    $access_token = $this->Aoken();             //获取access_token
-                    // dd($access_token);
-                    // $fromusername = $xml_obj->FromUserName;
-                    $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$xml_obj->FromUserName.'&lang=zh_CN';
-                    $user_json = file_get_contents($url);                 //发送地址  接回来 json 字符串
-                    $user_data = json_decode($user_json,true);          //转换成数组
+                        $data = [
+                            'nickname'=>$user_data['nickname'],
+                            'sex'=>$user_data['sex'],
+                            'country'=>$user_data['country'],
+                            'headimgurl'=>$user_data['headimgurl'],
+                            'add_time'=>$user_data['subscribe_time'],
+                            'openid'=>$user_data['openid'],
+                        ];
 
-                    $data = [
-                        'nickname'=>$user_data['nickname'],
-                        'sex'=>$user_data['sex'],
-                        'country'=>$user_data['country'],
-                        'headimgurl'=>$user_data['headimgurl'],
-                        'add_time'=>$user_data['subscribe_time'],
-                        'openid'=>$user_data['openid'],
-                    ];
+                        UserModel::insertGetId($data);  //添加用户    
+                    }
                     
-                    UserModel::insertGetId($data);  //添加用户       
+                    
+                    $resule = $this->attention($xml_obj,$Content);          //调用回复文本
                     return $resule;     //关注成功  返回值
                 }
                 //自定义 菜单回复
