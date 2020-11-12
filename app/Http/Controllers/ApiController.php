@@ -46,8 +46,8 @@ class ApiController extends Controller
             switch($xml_obj->MsgType){
                 //图片
                 case'image';
-                $this->image();
-
+                return $this->image();
+            break;
             }
             //判断
             if($xml_obj->MsgType=='event'){
