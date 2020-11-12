@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
-// use SimpleXMLElement;
+
 use Log;  //注释
 use GuzzleHttp\Client;
 
@@ -40,36 +40,41 @@ class ApiController extends Controller
             file_put_contents('wx_event.log',$xml,FILE_APPEND);
             $xml_obj = simplexml_load_string($xml);         //将xml文件转换成对象
 
-            $this->xml_obj = $xml_obj;
-
             //判断
             if($xml_obj->MsgType=='event'){
                 //关注
                 if($xml_obj->Event=='subscribe'){
-                    //关注
-                    $Content = '关注成功';
-                    $resule = $this->attention($xml_obj,$Content);
+                    //判断当前用户是否已经关注 过
+                    $wxUser = UserModel::where('openid',$xml_obj->FromUserName)->firse();
+                    if($wxUser){
+                        $Content = '谢谢再次关注';
+                        $resule = $this->attention($xml_obj,$Content);
+                    }else{
+                        //关注 方法
+                        $Content = '关注成功';
+                        $resule = $this->attention($xml_obj,$Content);
 
-                    //用户信息
-                    $FromUserName = $xml_obj->FromUserName;
+                        //用户信息
+                        $access_token = $this->Aoken();             //获取access_token
+                        // dd($access_token);
+                        // $fromusername = $xml_obj->FromUserName;
+                        $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$xml_obj->FromUserName.'&lang=zh_CN';
+                        $user_json = file_get_contents($url);                 //发送地址  接回来 json 字符串
+                        $user_data = json_decode($user_json,true);          //转换成数组
 
-                    $access_token = $this->Aoken();             //获取access_token
-                    // dd($access_token);
-                    // $fromusername = $xml_obj->FromUserName;
-                    $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$FromUserName.'&lang=zh_CN';
-                    $user_json = file_get_contents($url);                 //发送地址  接回来 json 字符串
-                    $user_data = json_decode($user_json,true);          //转换成数组
-
-                    $data = [
-                        'nickname'=>$user_data['nickname'],
-                        'sex'=>$user_data['sex'],
-                        'country'=>$user_data['country'],
-                        'headimgurl'=>$user_data['headimgurl'],
-                        'add_time'=>$user_data['subscribe_time'],
-                        'openid'=>$user_data['openid'],
-                    ];
-                    $userModel = new UserModel;
-                    $userModel::insertGetId($data);
+                        $data = [
+                            'nickname'=>$user_data['nickname'],
+                            'sex'=>$user_data['sex'],
+                            'country'=>$user_data['country'],
+                            'headimgurl'=>$user_data['headimgurl'],
+                            'add_time'=>$user_data['subscribe_time'],
+                            'openid'=>$user_data['openid'],
+                        ];
+                        
+                        $userModel = new UserModel;         
+                        $userModel::insertGetId($data);  //添加用户   
+                    }
+                    
                     return $resule;     //关注成功  返回值
                 }
                 //自定义 菜单回复
@@ -84,7 +89,6 @@ class ApiController extends Controller
                     }
                 }
                 
-                
             }else if($xml_obj->MsgType=='text'){
                 //信息 回复
                 switch($xml_obj->Content){
@@ -98,13 +102,9 @@ class ApiController extends Controller
                         $weather = $this->attention($xml_obj,$Content);           //xml  返回微信
                         echo $weather;
                     break;
-
-
                 }
             }
-
         }
-
     }
     
     /**天气   和风 */
@@ -178,15 +178,17 @@ class ApiController extends Controller
                 ],
                 [
                     'name'=>'菜单',
-                    'sub_button'=>[
-                        "type"=>"view",
-                        "name"=>"百度",
-                        "url"=>"http://www.baidu.com"
-                    ],[
-                        "type"=>"click",
-                        "name"=>"签到",
-                        "key"=>"SIGN_IN"
-                    ]
+                        'sub_button'=>[
+                                [
+                                "type"=>"view",
+                                "name"=>"百度",
+                                "url"=>"http://www.baidu.com"
+                            ],[
+                                "type"=>"click",
+                                "name"=>"签到",
+                                "key"=>"SIGN_IN"
+                            ]
+                        ]
                     
                 ],
                 
@@ -204,6 +206,8 @@ class ApiController extends Controller
         echo $data;
         
     }
+
+
 
 
 
