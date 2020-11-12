@@ -40,6 +40,7 @@ class ApiController extends Controller
             
             file_put_contents('wx_event.log',$xml,FILE_APPEND);
             $xml_obj = simplexml_load_string($xml);         //将xml文件转换成对象
+            
             //定义函数 
             $this->xml_obj = $xml_obj;
             //写入消息
@@ -62,7 +63,7 @@ class ApiController extends Controller
                         $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$xml_obj->FromUserName.'&lang=zh_CN';
                         $user_json = file_get_contents($url);                 //发送地址  接回来 json 字符串
                         $user_data = json_decode($user_json,true);          //转换成数组
-
+                        dd($user_data);
                         $data = [
                             'nickname'=>$user_data['nickname'],
                             'sex'=>$user_data['sex'],
@@ -175,19 +176,7 @@ class ApiController extends Controller
         return $xml_info;
     }
 
-    /**添加图片信息 */
-    public function image(){
-        $xml = $this->xml_obj;
-        $data = [
-            'openid'=>$xml->FromUserName,
-            'msgtype'=>$xml->MsgType,
-            'add_time'=>$xml->CreateTime,
-            'msgid'=>$xml->MsgId,
-            'picurl'=>$xml->PicUrl,
-            'mediaid'=>$xml->MediaId
-        ];
-        MediaModel::insertGetId($data);
-    }
+    
 
     /**自定义菜单 */
     public function custom(){
