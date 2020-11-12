@@ -241,12 +241,7 @@ class ApiController extends Controller
         
     }
 
-    /**菜单签到 按钮 */
-    public function sgin(){
-        $xml_obj = $this->xml_obj;
-        dd($xml_obj);
-        return '签到成功';
-    }
+    
 
 
 
