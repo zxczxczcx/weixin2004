@@ -39,7 +39,8 @@ class ApiController extends Controller
             
             file_put_contents('wx_event.log',$xml,FILE_APPEND);
             $xml_obj = simplexml_load_string($xml);         //将xml文件转换成对象
-
+            //定义函数 
+            $this->xml_obj = $xml_obj;
             //判断
             if($xml_obj->MsgType=='event'){
                 //关注
@@ -78,9 +79,17 @@ class ApiController extends Controller
                 //自定义 菜单回复
                 if($xml_obj->Event=='CLICK'){
                     switch($xml_obj->EventKey){
+                        //天气  按钮
                         case'V1001_TODAY_MUSIC';
                             $count_str = $this->weather();          //天气 返回参数
                             $weather = $this->attention($xml_obj,$count_str);           //xml  返回微信
+                            echo $weather;
+                        break;
+                        //签到按钮
+                        case'SIGN_IN';
+                            $count_str = $this->sgin();
+                            // $count_str = '签到成功';
+                            $weather = $this->attention($xml_obj,$count_str);   
                             echo $weather;
                         break;
                         
@@ -96,7 +105,7 @@ class ApiController extends Controller
                         echo $weather;
                     break; 
                     case'你好';
-                        $Content = '您好系统维护中，请稍后再试';
+                        $Content = '欢迎来到我的世界';
                         $weather = $this->attention($xml_obj,$Content);           //xml  返回微信
                         echo $weather;
                     break;
@@ -208,6 +217,13 @@ class ApiController extends Controller
         $data = $response->getbody();
         echo $data;
         
+    }
+
+    /**菜单签到 按钮 */
+    public function sgin(){
+        $xml_obj = $this->xml_obj;
+        dd($xml_obj);
+        return '签到成功';
     }
 
 
