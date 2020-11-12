@@ -9,6 +9,7 @@ use Log;  //注释
 use GuzzleHttp\Client;
 
 use App\Model\UserModel;
+use App\Model\MediaModel;
 
 class ApiController extends Controller
 {
@@ -41,6 +42,13 @@ class ApiController extends Controller
             $xml_obj = simplexml_load_string($xml);         //将xml文件转换成对象
             //定义函数 
             $this->xml_obj = $xml_obj;
+            //写入消息
+            switch($xml_obj->MsgType){
+                //图片
+                case'image';
+                $this->image();
+
+            }
             //判断
             if($xml_obj->MsgType=='event'){
                 //关注
@@ -170,6 +178,20 @@ class ApiController extends Controller
         //返回数据
         $xml_info = sprintf($xml_attention,$tousername,$fromusername,time(),'text',$Content);
         return $xml_info;
+    }
+
+    /**添加图片信息 */
+    public function image(){
+        $xml = $this->xml_obj;
+        $data = [
+            'openid'=>$xml->FromUserName,
+            'msgtype'=>$xml->MsgType,
+            'add_time'=>$xml->CreateTime,
+            'msgid'=>$xml->MsgId,
+            'picurl'=>$xml->PicUrl,
+            'mediaid'=>$xml->MediaId
+        ];
+        MediaModel::insertGetId($data);
     }
 
     /**自定义菜单 */
