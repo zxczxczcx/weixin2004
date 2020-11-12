@@ -48,12 +48,10 @@ class ApiController extends Controller
                     $wxUser = UserModel::where('openid',$xml_obj->FromUserName)->firse();
                     if($wxUser){
                         $Content = '谢谢再次关注';
-                        $resule = $this->attention($xml_obj,$Content);
+                        
                     }else{
                         //关注 方法
                         $Content = '关注成功';
-                        $resule = $this->attention($xml_obj,$Content);
-
                         //用户信息
                         $access_token = $this->Aoken();             //获取access_token
                         // dd($access_token);
@@ -74,7 +72,7 @@ class ApiController extends Controller
                         $userModel = new UserModel;         
                         $userModel::insertGetId($data);  //添加用户   
                     }
-                    
+                    $resule = $this->attention($xml_obj,$Content);
                     return $resule;     //关注成功  返回值
                 }
                 //自定义 菜单回复
