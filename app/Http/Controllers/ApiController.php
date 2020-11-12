@@ -100,6 +100,11 @@ class ApiController extends Controller
                         $weather = $this->attention($xml_obj,$Content);           //xml  返回微信
                         echo $weather;
                     break;
+                    case'时间';
+                        $time = date('Y-m-d H:i:s',time());
+                        $weather = $this->attention($xml_obj,$time);           //xml  返回微信
+                        echo $weather;
+                    break; 
                 }
             }
         }
