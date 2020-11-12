@@ -43,12 +43,7 @@ class ApiController extends Controller
             //定义函数 
             $this->xml_obj = $xml_obj;
             //写入消息
-            switch($xml_obj->MsgType){
-                //图片
-                case'image';
-                return $this->image();
-            break;
-            }
+            
             //判断
             if($xml_obj->MsgType=='event'){
                 //关注
