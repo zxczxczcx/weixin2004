@@ -66,8 +66,7 @@ class ApiController extends Controller
                         'openid'=>$user_data['openid'],
                     ];
                     
-                    $userModel = new UserModel;         
-                    $userModel::insertGetId($data);  //添加用户       
+                    UserModel::insertGetId($data);  //添加用户       
                     return $resule;     //关注成功  返回值
                 }
                 //自定义 菜单回复
