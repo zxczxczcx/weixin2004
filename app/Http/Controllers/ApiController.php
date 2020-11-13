@@ -100,8 +100,7 @@ class ApiController extends Controller
                             // dd($count_str);
                             // $count_str = '签到成功';
                             $weather = $this->attention($count_str); 
-                            // dd($weather);  
-                            echo $count_str;
+                            echo $weather;
                         break;
                         
                     }
