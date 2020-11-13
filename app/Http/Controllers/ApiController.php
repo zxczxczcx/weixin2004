@@ -121,10 +121,13 @@ class ApiController extends Controller
             //写入消息
             switch($xml_obj->MsgType){
                 case'image';
-                    $this->image();
+                    $this->rand_image();
                 break;
                 case'text';
                     $this->rand_text();
+                break;
+                case'voice';
+                    $this->rand_voice();
                 break;
             }
         }
@@ -257,7 +260,7 @@ class ApiController extends Controller
     }
 
     /**保存照片 image  并回复 TODO */
-    public function image(){
+    public function rand_image(){
         $xml = $this->xml_obj;
         // dd($xml->Picurl);
         $data = [
@@ -287,7 +290,7 @@ class ApiController extends Controller
     }
     
     /**写入 语音 */
-    public function voice(){
+    public function rand_voice(){
         $xml = $this->xml_obj;
         $data = [
             'openid'=>$xml->FromUserName,
@@ -297,7 +300,7 @@ class ApiController extends Controller
             'format'=>$xml->Format,
             'mediaid'=>$xml->MediaId,
         ];
-        MediaModel::insert($data);
+        return MediaModel::insert($data);
     }
 
 
