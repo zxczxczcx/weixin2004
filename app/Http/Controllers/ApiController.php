@@ -43,7 +43,13 @@ class ApiController extends Controller
             
             //定义函数 
             $this->xml_obj = $xml_obj;
+            // echo __LINE__;die;
             //写入消息
+            switch($xml_obj->MsgType){
+                case'image';
+                    $this->image();
+                break;
+            }
             
             //判断
             if($xml_obj->MsgType=='event'){
@@ -63,7 +69,6 @@ class ApiController extends Controller
                         $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$xml_obj->FromUserName.'&lang=zh_CN';
                         $user_json = file_get_contents($url);                 //发送地址  接回来 json 字符串
                         $user_data = json_decode($user_json,true);          //转换成数组
-                        dd($user_data);
                         $data = [
                             'nickname'=>$user_data['nickname'],
                             'sex'=>$user_data['sex'],
@@ -77,7 +82,7 @@ class ApiController extends Controller
                     }
                     
                     
-                    $resule = $this->attention($xml_obj,$Content);          //调用回复文本
+                    $resule = $this->attention($Content);          //调用回复文本
                     return $resule;     //关注成功  返回值
                 }
                 //自定义 菜单回复
@@ -86,36 +91,36 @@ class ApiController extends Controller
                         //天气  按钮
                         case'V1001_TODAY_MUSIC';
                             $count_str = $this->weather();          //天气 返回参数
-                            $weather = $this->attention($xml_obj,$count_str);           //xml  返回微信
+                            $weather = $this->attention($count_str);           //xml  返回微信
                             echo $weather;
                         break;
                         //签到按钮
                         case'SIGN_IN';
-                            $count_str = $this->sgin();
+                            $count_str = $this->sign();
                             // $count_str = '签到成功';
-                            $weather = $this->attention($xml_obj,$count_str);   
-                            echo $weather;
+                            $weather = $this->attention($count_str);   
+                            echo $count_str;
                         break;
                         
                     }
                 }
-                
+
             }else if($xml_obj->MsgType=='text'){
                 //信息 回复
                 switch($xml_obj->Content){
                     case'天气';
                         $count_str = $this->weather();          //天气 返回参数
-                        $weather = $this->attention($xml_obj,$count_str);           //xml  返回微信
+                        $weather = $this->attention($count_str);           //xml  返回微信
                         echo $weather;
                     break; 
                     case'你好';
                         $Content = '欢迎来到我的世界';
-                        $weather = $this->attention($xml_obj,$Content);           //xml  返回微信
+                        $weather = $this->attention($Content);           //xml  返回微信
                         echo $weather;
                     break;
                     case'时间';
                         $time = date('Y-m-d H:i:s',time());
-                        $weather = $this->attention($xml_obj,$time);           //xml  返回微信
+                        $weather = $this->attention($time);           //xml  返回微信
                         echo $weather;
                     break; 
                 }
@@ -159,7 +164,8 @@ class ApiController extends Controller
     /**
      *  被动回复 发送文本
      */
-    public function attention($xml_obj,$Content){
+    public function attention($Content){
+        $xml_obj = $this->xml_obj;
         //拼凑数据
         $tousername = $xml_obj->FromUserName;
         $fromusername = $xml_obj->ToUserName;
@@ -175,8 +181,6 @@ class ApiController extends Controller
         $xml_info = sprintf($xml_attention,$tousername,$fromusername,time(),'text',$Content);
         return $xml_info;
     }
-
-    
 
     /**自定义菜单 */
     public function custom(){
@@ -225,7 +229,31 @@ class ApiController extends Controller
         
     }
 
-    
+    /**保存照片 image */
+    public function image(){
+        $xml = $this->xml_obj;
+        // dd($xml);
+    }
+
+    /**签到 sign */
+    public function sign(){
+        $xml = $this->xml_obj;  //得到xml 数据
+        $fromUser = $xml->FromUserName;
+        $key = 'wx_user:'.$fromUser;        //定义key
+        $time = strtotime(date('Y-m-d',time()));
+        Redis::zAdd($key,$time,$fromUser);        //有序集合
+        $user_time = Redis::zrange($key,0,-1);
+        
+        //判断
+        if(in_array($time,$user_time)){
+            $Content = '今日已签到';
+        }else{
+            $Content = '签到成功';
+        }
+        // dd($Content);
+        return $Content;
+
+    }
 
 
 
