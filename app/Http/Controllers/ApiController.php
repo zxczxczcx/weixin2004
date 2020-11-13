@@ -81,7 +81,7 @@ class ApiController extends Controller
                         UserModel::insertGetId($data);  //添加用户    
                     }
                     
-                    
+                    echo $this->custom();        //自定义菜单  
                     $resule = $this->attention($Content);          //调用回复文本
                     return $resule;     //关注成功  返回值
                 }
