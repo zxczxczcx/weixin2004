@@ -92,13 +92,15 @@ class ApiController extends Controller
                         case'V1001_TODAY_MUSIC';
                             $count_str = $this->weather();          //天气 返回参数
                             $weather = $this->attention($count_str);           //xml  返回微信
-                            echo $weather;
+                            return $weather;
                         break;
                         //签到按钮
                         case'SIGN_IN';
                             $count_str = $this->sign();
+                            dd($count_str);
                             // $count_str = '签到成功';
-                            $weather = $this->attention($count_str);   
+                            $weather = $this->attention($count_str); 
+                            // dd($weather);  
                             echo $count_str;
                         break;
                         
@@ -166,6 +168,7 @@ class ApiController extends Controller
      */
     public function attention($Content){
         $xml_obj = $this->xml_obj;
+        // dd($xml_obj);
         //拼凑数据
         $tousername = $xml_obj->FromUserName;
         $fromusername = $xml_obj->ToUserName;
@@ -206,13 +209,16 @@ class ApiController extends Controller
                                 "name"=>"百度",
                                 "url"=>"http://www.baidu.com"
                             ],[
-                                "type"=>"click",
-                                "name"=>"签到",
-                                "key"=>"SIGN_IN"
+                                "type"=>"view",
+                                "name"=>"商城",
+                                "url"=>"http://www.baidu.com"
                             ]
                         ]
-                    
-                ],
+                ],[
+                    "type"=>"click",
+                    "name"=>"签到",
+                    "key"=>"SIGN_IN"
+                ]
                 
             ]
             
@@ -241,13 +247,13 @@ class ApiController extends Controller
         $fromUser = $xml->FromUserName;
         $key = 'wx_user:'.$fromUser;        //定义key
         $time = strtotime(date('Y-m-d',time()));
-        Redis::zAdd($key,$time,$fromUser);        //有序集合
+                
         $user_time = Redis::zrange($key,0,-1);
-        
         //判断
         if(in_array($time,$user_time)){
             $Content = '今日已签到';
         }else{
+            Redis::zAdd($key,$time);    //有序集合
             $Content = '签到成功';
         }
         // dd($Content);
