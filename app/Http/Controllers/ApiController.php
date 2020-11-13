@@ -123,6 +123,9 @@ class ApiController extends Controller
                 case'image';
                     $this->image();
                 break;
+                case'text';
+                    $this->rand_text();
+                break;
             }
         }
     }
@@ -269,6 +272,35 @@ class ApiController extends Controller
         
     }
 
+    /**写入文本信息  rand_text*/
+    public function rand_text(){
+        $xml = $this->xml_obj;
+        $data = [
+            'openid'=>$xml->FromUserName,
+            'msgtype'=>$xml->MsgType,
+            'add_time'=>$xml->CreateTime,
+            'content'=>$xml->Content,
+            'msgid'=>$xml->MsgId,
+
+        ];
+        MediaModel::insert($data);
+    }
+    
+    /**写入 语音 */
+    public function voice(){
+        $xml = $this->xml_obj;
+        $data = [
+            'openid'=>$xml->FromUserName,
+            'msgtype'=>$xml->MsgType,
+            'add_time'=>$xml->CreateTime,
+            'msgid'=>$xml->MsgId,
+            'format'=>$xml->Format,
+            'mediaid'=>$xml->MediaId,
+        ];
+        MediaModel::insert($data);
+    }
+
+
     /**签到 sign   待优化==========*/
     public function sign(){
         $xml = $this->xml_obj;  //得到xml 数据
@@ -288,6 +320,7 @@ class ApiController extends Controller
         return $Content;
 
     }
+
 
     
 
