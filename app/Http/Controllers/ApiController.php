@@ -97,7 +97,7 @@ class ApiController extends Controller
                         //签到按钮
                         case'SIGN_IN';
                             $count_str = $this->sign();
-                            dd($count_str);
+                            // dd($count_str);
                             // $count_str = '签到成功';
                             $weather = $this->attention($count_str); 
                             // dd($weather);  
