@@ -35,21 +35,13 @@ class ApiController extends Controller
             
             //接受数据
             $xml = file_get_contents('php://input');
-
             //记录日志
-            
             file_put_contents('wx_event.log',$xml,FILE_APPEND);
             $xml_obj = simplexml_load_string($xml);         //将xml文件转换成对象
             
             //定义函数 
             $this->xml_obj = $xml_obj;
             // echo __LINE__;die;
-            //写入消息
-            switch($xml_obj->MsgType){
-                case'image';
-                    $this->image();
-                break;
-            }
             
             //判断
             if($xml_obj->MsgType=='event'){
@@ -77,13 +69,13 @@ class ApiController extends Controller
                             'add_time'=>$user_data['subscribe_time'],
                             'openid'=>$user_data['openid'],
                         ];
-
+                        
                         UserModel::insertGetId($data);  //添加用户    
                     }
                     
-                    echo $this->custom();        //自定义菜单  
+                    $this->custom();                               //自定义菜单  
                     $resule = $this->attention($Content);          //调用回复文本
-                    return $resule;     //关注成功  返回值
+                    return $resule;                                //关注成功  返回值
                 }
                 //自定义 菜单回复
                 if($xml_obj->Event=='CLICK'){
@@ -97,8 +89,7 @@ class ApiController extends Controller
                         //签到按钮
                         case'SIGN_IN';
                             $count_str = $this->sign();
-                            // dd($count_str);
-                            // $count_str = '签到成功';
+                            
                             $weather = $this->attention($count_str); 
                             echo $weather;
                         break;
@@ -125,6 +116,13 @@ class ApiController extends Controller
                         echo $weather;
                     break; 
                 }
+            }
+
+            //写入消息
+            switch($xml_obj->MsgType){
+                case'image';
+                    $this->image();
+                break;
             }
         }
     }
@@ -184,6 +182,27 @@ class ApiController extends Controller
         return $xml_info;
     }
 
+    /**回复图片 */
+    public function imgtype(){
+        $xml_obj = $this->xml_obj;
+        // dd($xml_obj);
+        //拼凑数据
+        $tousername = $xml_obj->FromUserName;
+        $fromusername = $xml_obj->ToUserName;
+        $img = $xml_obj->PicUrl;
+        $data_img = '<xml>
+                        <ToUserName><![CDATA[%s]]></ToUserName>
+                        <FromUserName><![CDATA[%s]]></FromUserName>
+                        <CreateTime>%s</CreateTime>
+                        <MsgType><![CDATA[%s]]></MsgType>
+                        <Image>
+                        <MediaId><![CDATA[%s]]></MediaId>
+                        </Image>
+                    </xml>';
+        $xml_info = sprintf($data_img,$tousername,$fromusername,time(),'text',$img);
+        return $xml_info;
+    }
+
     /**自定义菜单 */
     public function custom(){
         
@@ -230,17 +249,27 @@ class ApiController extends Controller
             // JSON_UNESCAPED_UNICODE
         ]);
         $data = $response->getbody();
-        echo $data;
+        return  $data;
         
     }
 
-    /**保存照片 image */
+    /**保存照片 image  并回复 TODO */
     public function image(){
         $xml = $this->xml_obj;
-        // dd($xml);
+        // dd($xml->Picurl);
+        $data = [
+            'openid'=>$xml->FromUserName,
+            'msgtype'=>$xml->MsgType,
+            'add_time'=>$xml->CreateTime,
+            'msgid'=>$xml->MsgId,
+            'picurl'=>$xml->PicUrl,
+            'mediaid'=>$xml->MediaId,
+        ];
+        MediaModel::insert($data);
+        
     }
 
-    /**签到 sign */
+    /**签到 sign   待优化==========*/
     public function sign(){
         $xml = $this->xml_obj;  //得到xml 数据
         $fromUser = $xml->FromUserName;
@@ -259,6 +288,8 @@ class ApiController extends Controller
         return $Content;
 
     }
+
+    
 
 
 
