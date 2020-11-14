@@ -117,7 +117,7 @@ class ApiController extends Controller
                         echo $weather;
                     break;
                     default:                                    //排除上述选项意外的选项
-                        $this->else_Text();
+                        echo $this->else_Text();
                 }
             }
 
