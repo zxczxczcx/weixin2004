@@ -23,31 +23,30 @@ class ApiController extends Controller
         $signature = $_GET["signature"];
         $timestamp = $_GET["timestamp"];
         $nonce = $_GET["nonce"];
-        
+
         $token = env('WX_TOKEN');
         $tmpArr = array($token, $timestamp, $nonce);
         sort($tmpArr, SORT_STRING);
         $tmpStr = implode( $tmpArr );
         $tmpStr = sha1( $tmpStr );
-        
-    
+
         if( $tmpStr == $signature ){
-            
+
             //接受数据
             $xml = file_get_contents('php://input');
             //记录日志
             file_put_contents('wx_event.log',$xml,FILE_APPEND);
             $xml_obj = simplexml_load_string($xml);         //将xml文件转换成对象
-            
-            //定义函数 
+
+            //定义函数
             $this->xml_obj = $xml_obj;
             // echo __LINE__;die;
-            
+
             //判断
             if($xml_obj->MsgType=='event'){
                 //关注
                 if($xml_obj->Event=='subscribe'){
-                    
+
                     $wx_user = UserModel::where(['openid'=>$xml_obj->FromUserName])->first();
                     if($wx_user){
                         $Content = '谢谢再次关注';
@@ -69,15 +68,15 @@ class ApiController extends Controller
                             'add_time'=>$user_data['subscribe_time'],
                             'openid'=>$user_data['openid'],
                         ];
-                        
-                        UserModel::insertGetId($data);  //添加用户    
+
+                        UserModel::insertGetId($data);  //添加用户
                     }
-                    
-                    $this->custom();                               //自定义菜单  
+
+                    $this->custom();                               //自定义菜单
                     $resule = $this->attention($Content);          //调用回复文本
                     return $resule;                                //关注成功  返回值
                 }
-                //自定义 菜单回复
+                //菜单  回复
                 if($xml_obj->Event=='CLICK'){
                     switch($xml_obj->EventKey){
                         //天气  按钮
@@ -89,11 +88,13 @@ class ApiController extends Controller
                         //签到按钮
                         case'SIGN_IN';
                             $count_str = $this->sign();
-                            
-                            $weather = $this->attention($count_str); 
+                            $weather = $this->attention($count_str);
                             echo $weather;
                         break;
-                        
+                        case'SHOP';
+                            $this->shoptype();
+                        break;
+
                     }
                 }
 
@@ -104,7 +105,7 @@ class ApiController extends Controller
                         $count_str = $this->weather();          //天气 返回参数
                         $weather = $this->attention($count_str);           //xml  返回微信
                         echo $weather;
-                    break; 
+                    break;
                     case'你好';
                         $Content = '欢迎来到我的世界';
                         $weather = $this->attention($Content);           //xml  返回微信
@@ -114,11 +115,11 @@ class ApiController extends Controller
                         $time = date('Y-m-d H:i:s',time());
                         $weather = $this->attention($time);           //xml  返回微信
                         echo $weather;
-                    break; 
+                    break;
                 }
             }
 
-            //写入消息
+            //写入消息  只写入，不返回
             switch($xml_obj->MsgType){
                 case'image';
                     $this->rand_image();
@@ -132,19 +133,18 @@ class ApiController extends Controller
             }
         }
     }
-    
+
     /**天气   和风 */
     public function weather(){
         $url = 'https://devapi.qweather.com/v7/weather/now?location=101010100&key=ef14d67e99d74715b691c012e9ff4285&gzip=n';
         $weather_url = file_get_contents($url);
-        // $weather_url = '{"code":"200","updateTime":"2020-11-11T11:26+08:00","fxLink":"http://hfx.link/2ax1","now":{"obsTime":"2020-11-11T10:59+08:00","temp":"10","feelsLike":"8","icon":"100","text":"晴","wind360":"90","windDir":"东风","windScale":"1","windSpeed":"5","humidity":"49","precip":"0.0","pressure":"1027","vis":"6","cloud":"10","dew":"1"},"refer":{"sources":["Weather China"],"license":["no commercial use"]}}';
-        // $weather_url = $client->request('get',$url,['verify'=>false]);
+
         $weather_url = json_decode($weather_url,true);
         $weather_data = $weather_url['now'];
-        
+
         $count_str = '日期：'.date('Y-m-d H:i:s',time()+8).'天气：'.$weather_data['text'].';风向：'.$weather_data['windDir'].';风力等级：'.$weather_data['windScale'];
         return $count_str;
-        
+
     }
 
     /**
@@ -158,9 +158,9 @@ class ApiController extends Controller
             // echo $url;die;
             $ken = file_get_contents($url);
             $data = json_decode($ken,true);
-            
+
             Redis::set($key,$data['access_token']);
-            
+
             Redis::expire($key,3600);
         }
         return Redis::get($key);
@@ -175,7 +175,7 @@ class ApiController extends Controller
         //拼凑数据
         $tousername = $xml_obj->FromUserName;
         $fromusername = $xml_obj->ToUserName;
-        $xml_attention = 
+        $xml_attention =
                     '<xml>
                         <ToUserName><![CDATA[%s]]></ToUserName>
                         <FromUserName><![CDATA[%s]]></FromUserName>
@@ -188,7 +188,7 @@ class ApiController extends Controller
         return $xml_info;
     }
 
-    /**回复图片 */
+    /**回复图片 TODO */
     public function imgtype(){
         $xml_obj = $this->xml_obj;
         // dd($xml_obj);
@@ -211,41 +211,44 @@ class ApiController extends Controller
 
     /**自定义菜单 */
     public function custom(){
-        
+
         //自定义菜单   获取token
         $access_token = $this->Aoken();
         // echo $access_token;die;
         $url =  'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$access_token;
-        
-        // $weather_url = 'https://devapi.qweather.com/v7/weather/now?location=101010100&key=ef14d67e99d74715b691c012e9ff4285';
+
         $menu = [
             "button"=>[
-                [	
+                [
                     "type"=>"click",
-                    "name"=>"天气",
-                    "key"=>"V1001_TODAY_MUSIC"
+                    "name"=>"每日推荐",
+                    "key"=>"RMDSHOP"
                 ],
                 [
-                    'name'=>'菜单',
-                        'sub_button'=>[
-                                [
-                                "type"=>"view",
-                                "name"=>"百度",
-                                "url"=>"http://www.baidu.com"
-                            ],[
-                                "type"=>"view",
-                                "name"=>"商城",
-                                "url"=>"http://www.baidu.com"
-                            ]
-                        ]
-                ],[
                     "type"=>"click",
                     "name"=>"签到",
                     "key"=>"SIGN_IN"
+                ],[
+                    'name'=>'菜单',
+                    'sub_button'=>[
+                        [
+                            "type"=>"view",
+                            "name"=>"百度",
+                            "url"=>"http://www.baidu.com"
+                        ],[
+                            "type"=>"click",
+                            "name"=>"商城",
+                            "key"=>"SHOP"
+                        ],[
+                            "type"=>"click",
+                            "name"=>"天气",
+                            "key"=>"V1001_TODAY_MUSIC"
+                        ]
+                    ]
                 ]
-                
+
             ]
-            
+
         ];
             // dd($menu);die;
         $client = new Client;
@@ -256,7 +259,11 @@ class ApiController extends Controller
         ]);
         $data = $response->getbody();
         return  $data;
-        
+
+    }
+
+    public function shoptype(){
+        $url = '';
     }
 
     /**保存照片 image  并回复 TODO */
@@ -272,7 +279,8 @@ class ApiController extends Controller
             'mediaid'=>$xml->MediaId,
         ];
         MediaModel::insert($data);
-        
+
+        $photo = file_get_contents($xml->PicUrl);
     }
 
     /**写入文本信息  rand_text*/
@@ -288,7 +296,7 @@ class ApiController extends Controller
         ];
         MediaModel::insert($data);
     }
-    
+
     /**写入 语音 */
     public function rand_voice(){
         $xml = $this->xml_obj;
@@ -303,14 +311,13 @@ class ApiController extends Controller
         return MediaModel::insert($data);
     }
 
-
     /**签到 sign   待优化==========*/
     public function sign(){
         $xml = $this->xml_obj;  //得到xml 数据
         $fromUser = $xml->FromUserName;
         $key = 'wx_user:'.$fromUser;        //定义key
         $time = strtotime(date('Y-m-d',time()));
-                
+
         $user_time = Redis::zrange($key,0,-1);
         //判断
         if(in_array($time,$user_time)){
@@ -325,7 +332,7 @@ class ApiController extends Controller
     }
 
 
-    
+
 
 
 
