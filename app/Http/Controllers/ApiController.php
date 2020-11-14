@@ -116,6 +116,8 @@ class ApiController extends Controller
                         $weather = $this->attention($time);           //xml  返回微信
                         echo $weather;
                     break;
+                    default:                                    //排除上述选项意外的选项
+                        $this->else_Text();
                 }
             }
 
@@ -130,8 +132,7 @@ class ApiController extends Controller
                 case'voice';
                     $this->rand_voice();
                 break;
-                default:                                    //排除上述选项意外的选项
-                    $this->else_Text();
+
             }
         }
     }
