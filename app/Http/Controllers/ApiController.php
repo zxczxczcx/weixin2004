@@ -131,7 +131,7 @@ class ApiController extends Controller
                     $this->rand_voice();
                 break;
                 default:                                    //排除上述选项意外的选项
-                    echo "语言描述不清楚，系统分析错误";
+                    $this->else_Text();
             }
         }
     }
@@ -208,6 +208,27 @@ class ApiController extends Controller
                         </Image>
                     </xml>';
         $xml_info = sprintf($data_img,$tousername,$fromusername,time(),'text',$img);
+        return $xml_info;
+    }
+
+    /**回复信息  其他信息 */
+    public function else_Text(){
+        $xml_obj = $this->xml_obj;
+        // dd($xml_obj);
+        //拼凑数据
+        $Content = '系统识别中.....';
+        $tousername = $xml_obj->FromUserName;
+        $fromusername = $xml_obj->ToUserName;
+        $xml_attention =
+            '<xml>
+                        <ToUserName><![CDATA[%s]]></ToUserName>
+                        <FromUserName><![CDATA[%s]]></FromUserName>
+                        <CreateTime>%s</CreateTime>
+                        <MsgType><![CDATA[%s]]></MsgType>
+                        <Content><![CDATA[%s]]></Content>
+                    </xml>';
+        //返回数据
+        $xml_info = sprintf($xml_attention,$tousername,$fromusername,time(),'text',$Content);
         return $xml_info;
     }
 
