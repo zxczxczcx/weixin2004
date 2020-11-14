@@ -130,6 +130,8 @@ class ApiController extends Controller
                 case'voice';
                     $this->rand_voice();
                 break;
+                default:                                    //排除上述选项意外的选项
+                    echo "语言描述不清楚，系统分析错误";
             }
         }
     }
@@ -211,7 +213,6 @@ class ApiController extends Controller
 
     /**自定义菜单 */
     public function custom(){
-
         //自定义菜单   获取token
         $access_token = $this->Aoken();
         // echo $access_token;die;
