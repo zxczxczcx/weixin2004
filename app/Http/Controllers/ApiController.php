@@ -32,7 +32,7 @@ class ApiController extends Controller
 
         if( $tmpStr == $signature ){
 
-            //接受数据
+            //接受数据 网络数据
             $xml = file_get_contents('php://input');
             //记录日志
             file_put_contents('wx_event.log',$xml,FILE_APPEND);
