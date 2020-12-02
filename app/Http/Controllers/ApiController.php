@@ -121,9 +121,8 @@ class ApiController extends Controller
                             $Count =   $xml_obj->Content;
                             
                             $text = $this->spell($Count);           //xml  返回微信
-                            echo $text;die;
                             $weather = $this->attention($text);
-
+                            echo $weather;
                             // echo $weather;
 
 
@@ -372,7 +371,6 @@ class ApiController extends Controller
     public function spell($Count){
         // $count = '天行数据是一个网络接口平台';
         $spellInfo = SpellModel::where('hanzi',$Count)->select('pinyin')->first();              //对象
-        
         if(empty($spellInfo)){
             //得出数组
             $url = 'http://api.tianapi.com/txapi/pinyin/index?key=e64b4aed04815a9ecbfadd32234883af&text='.$Count;
