@@ -119,9 +119,12 @@ class ApiController extends Controller
                     break;
                     default:  
                             $Count =   $xml_obj->Content;
+                            
                             $text = $this->spell($Count);           //xml  返回微信
+                            echo $text;die;
                             $weather = $this->attention($text);
-                            echo $weather;
+
+                            // echo $weather;
 
 
                         // echo $this->else_Text();  
@@ -368,20 +371,29 @@ class ApiController extends Controller
     /** 汉子转拼音  spell*/
     public function spell($Count){
         // $count = '天行数据是一个网络接口平台';
-        $spellInfo = SpellModel::where('hanzi',$Count)->select('pinyin')->get();              //对象
+        $spellInfo = SpellModel::where('hanzi',$Count)->select('pinyin')->first();              //对象
+        
         if(empty($spellInfo)){
             //得出数组
             $url = 'http://api.tianapi.com/txapi/pinyin/index?key=e64b4aed04815a9ecbfadd32234883af&text='.$Count;
             $spell = file_get_contents($url);
-            dd($spell);
+
             $sInfo = json_decode($spell,true);
-            print_r($sInfo);die;
+            $spe = $sInfo['newslist'];
+            $pinyin = '';
+            foreach($spe as $k=>$v){
+                $pinyin= $v;
+            }
             $data = [
-                'spell'=>$sInfo['newslist']['pinyin'],
+                'spell'=>$pinyin['pinyin'],
                 'hanzi'=>$Count
             ];
             SpellModel::insert($data);
+        }else{
+            $pinyin = $spellInfo->toArray();
         }
+
+        return $pinyin['pinyin'];
 
     }
 
