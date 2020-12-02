@@ -109,17 +109,17 @@ class ApiController extends Controller
                     case'天气';
                         $count_str = $this->weather();          //天气 返回参数
                         $weather = $this->attention($count_str);           //xml  返回微信
-                        // echo $weather;
+                        echo $weather;
                     break;
                     case'你好';
                         $Content = '欢迎来到我的世界';
                         $weather = $this->attention($Content);           //xml  返回微信
-                        // echo $weather;
+                        echo $weather;
                     break;
                     case'时间';
                         $time = date('Y-m-d H:i:s',time());
                         $weather = $this->attention($time);           //xml  返回微信
-                        // echo $weather;
+                        echo $weather;
                     break;
                     default:  
                             $Count =   $xml_obj->Content;
@@ -127,8 +127,6 @@ class ApiController extends Controller
                             $Content = $this->spell($Count);           //xml  返回微信
                             $weather = $this->attention($Content);
                             echo $weather;
-                            // echo $weather;
-
 
                         // echo $this->else_Text();  
                 }
@@ -404,9 +402,7 @@ class ApiController extends Controller
         }else{
             $pinyin = $spellInfo->toArray();
         }
-
         return $pinyin['pinyin'];
-
     }
 
 
