@@ -120,8 +120,8 @@ class ApiController extends Controller
                     default:  
                             $Count =   $xml_obj->Content;
                             
-                            $text = $this->spell($Count);           //xml  返回微信
-                            $weather = $this->attention($text);
+                            $Content = $this->spell($Count);           //xml  返回微信
+                            $weather = $this->attention($Content);
                             echo $weather;
                             // echo $weather;
 
