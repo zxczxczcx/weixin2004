@@ -105,22 +105,25 @@ class ApiController extends Controller
                     case'天气';
                         $count_str = $this->weather();          //天气 返回参数
                         $weather = $this->attention($count_str);           //xml  返回微信
-                        echo $weather;
+                        // echo $weather;
                     break;
                     case'你好';
                         $Content = '欢迎来到我的世界';
                         $weather = $this->attention($Content);           //xml  返回微信
-                        echo $weather;
+                        // echo $weather;
                     break;
                     case'时间';
                         $time = date('Y-m-d H:i:s',time());
                         $weather = $this->attention($time);           //xml  返回微信
-                        echo $weather;
+                        // echo $weather;
                     break;
                     default:  
                             $Count =   $xml_obj->Content;
-                            $weather = $this->spell($Count);           //xml  返回微信
-                            echo $weather;                             //排除上述选项意外的选项
+                            $text = $this->spell($Count);           //xml  返回微信
+                            $weather = $this->attention($text);
+                            echo $weather;
+
+
                         // echo $this->else_Text();  
                 }
             }
@@ -365,20 +368,20 @@ class ApiController extends Controller
     /** 汉子转拼音  spell*/
     public function spell($Count){
         // $count = '天行数据是一个网络接口平台';
-        $spellInfo = SpellModel::where('hanzi',$Count)->select('pinyin')->first()->toArray();
+        $spellInfo = SpellModel::where('hanzi',$Count)->select('pinyin')->get();              //对象
         if(empty($spellInfo)){
+            //得出数组
             $url = 'http://api.tianapi.com/txapi/pinyin/index?key=e64b4aed04815a9ecbfadd32234883af&text='.$Count;
             $spell = file_get_contents($url);
-            $spellInfo = json_decode($spell,true);
-            $spellInfo = $spellInfo->toArray();
+            dd($spell);
+            $sInfo = json_decode($spell,true);
+            print_r($sInfo);die;
             $data = [
-                'spell'=>$spellInfo['pinyin'],
+                'spell'=>$sInfo['newslist']['pinyin'],
                 'hanzi'=>$Count
             ];
             SpellModel::insert($data);
         }
-        return $spellInfo['pinyin'];
-        
 
     }
 
