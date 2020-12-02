@@ -121,6 +121,7 @@ class ApiController extends Controller
                             $Count =   $xml_obj->Content;
                             
                             $text = $this->spell($Count);           //xml  返回微信
+                            echo $text;die;
                             $weather = $this->attention($text);
                             echo $weather;
                             // echo $weather;
@@ -383,7 +384,7 @@ class ApiController extends Controller
                 $pinyin= $v;
             }
             $data = [
-                'spell'=>$pinyin['pinyin'],
+                'pinyin'=>$pinyin['pinyin'],
                 'hanzi'=>$Count
             ];
             SpellModel::insert($data);
