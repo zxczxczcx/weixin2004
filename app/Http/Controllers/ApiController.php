@@ -155,7 +155,7 @@ class ApiController extends Controller
         $spInfo = SpellModel::limit(10)->orderBy('id','desc')->get()->toArray();
         $sp_str = '';
         foreach($spInfo as $k=>$v){
-            $sp_str .=$v['pinyin'].',';
+            $sp_str .=$v['pinyin'].'\r\n';
         }
         return $sp_str;
     }
