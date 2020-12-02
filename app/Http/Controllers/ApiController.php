@@ -84,7 +84,7 @@ class ApiController extends Controller
                         case'V1001_TODAY_MUSIC';
                             $count_str = $this->weather();          //天气 返回参数
                             $weather = $this->attention($count_str);           //xml  返回微信
-                            echo $weather;
+                            return $weather;
                         break;
                         //签到按钮
                         case'SIGN_IN';
@@ -106,7 +106,7 @@ class ApiController extends Controller
             }else if($xml_obj->MsgType=='text'){
                 //信息 回复
                 switch($xml_obj->Content){
-                    case'%天气';
+                    case'天气';
                         $count_str = $this->weather();          //天气 返回参数
                         $weather = $this->attention($count_str);           //xml  返回微信
                         echo $weather;
@@ -160,7 +160,7 @@ class ApiController extends Controller
 
     /**天气   和风 */
     public function weather(){
-        $url = 'https://devapi.qweather.com/v7/weather/now?location=beijing&key=ef14d67e99d74715b691c012e9ff4285&gzip=n';
+        $url = 'https://devapi.qweather.com/v7/weather/now?location=101010100&key=ef14d67e99d74715b691c012e9ff4285&gzip=n';
         $weather_url = file_get_contents($url);
 
         $weather_url = json_decode($weather_url,true);
