@@ -84,7 +84,7 @@ class ApiController extends Controller
                         case'V1001_TODAY_MUSIC';
                             $count_str = $this->weather();          //天气 返回参数
                             $weather = $this->attention($count_str);           //xml  返回微信
-                            return $weather;
+                            echo $weather;
                         break;
                         //签到按钮
                         case'SIGN_IN';
