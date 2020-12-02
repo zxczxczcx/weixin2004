@@ -95,6 +95,10 @@ class ApiController extends Controller
                         case'SHOP';
                             $this->shoptype();
                         break;
+                        case'HISTORY';
+                            $history_str = $this->history();
+                            $weather = $this->attention($history_str);
+                            echo $weather;
 
                     }
                 }
@@ -144,6 +148,16 @@ class ApiController extends Controller
 
             }
         }
+    }
+
+    /**history  查询最新十条 拼音 */
+    public function history(){
+        $spInfo = SpellModel::limit(10)->orderBy('id','desc')->get()->toArray();
+        $sp_str = '';
+        foreach($spInfo as $k=>$v){
+            $sp_str .=$v['pinyin'].',';
+        }
+        return $sp_str;
     }
 
     /**天气   和风 */
