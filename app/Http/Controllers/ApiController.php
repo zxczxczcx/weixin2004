@@ -10,6 +10,7 @@ use GuzzleHttp\Client;
 
 use App\Model\UserModel;
 use App\Model\MediaModel;
+use App\Model\SpellModel;
 
 class ApiController extends Controller
 {
@@ -36,7 +37,7 @@ class ApiController extends Controller
             $xml = file_get_contents('php://input');
             //记录日志
             file_put_contents('wx_event.log',$xml,FILE_APPEND);
-            $xml_obj = simplexml_load_string($xml);         //将xml文件转换成对象
+            $xml_obj = simplexml_load_string($xml);         //将xml文件转换成对象a  
 
             //定义函数
             $this->xml_obj = $xml_obj;
@@ -116,8 +117,11 @@ class ApiController extends Controller
                         $weather = $this->attention($time);           //xml  返回微信
                         echo $weather;
                     break;
-                    default:                                    //排除上述选项意外的选项
-                        echo $this->else_Text();
+                    default:  
+                            $Count =   $xml_obj->Content;
+                            $weather = $this->spell($Count);           //xml  返回微信
+                            echo $weather;                             //排除上述选项意外的选项
+                        // echo $this->else_Text();  
                 }
             }
 
@@ -266,6 +270,10 @@ class ApiController extends Controller
                             "type"=>"click",
                             "name"=>"天气",
                             "key"=>"V1001_TODAY_MUSIC"
+                        ],[
+                            "type"=>"click",
+                            "name"=>"查询历史记录",
+                            "key"=>"HISTORY"
                         ]
                     ]
                 ]
@@ -286,7 +294,7 @@ class ApiController extends Controller
     }
 
     public function shoptype(){
-        $url = '';
+        // $url = '';
     }
 
     /**保存照片 image  并回复 TODO */
@@ -351,6 +359,26 @@ class ApiController extends Controller
         }
         // dd($Content);
         return $Content;
+
+    }
+
+    /** 汉子转拼音  spell*/
+    public function spell($Count){
+        // $count = '天行数据是一个网络接口平台';
+        $spellInfo = SpellModel::where('hanzi',$Count)->select('pinyin')->first()->toArray();
+        if(empty($spellInfo)){
+            $url = 'http://api.tianapi.com/txapi/pinyin/index?key=e64b4aed04815a9ecbfadd32234883af&text='.$Count;
+            $spell = file_get_contents($url);
+            $spellInfo = json_decode($spell,true);
+            $spellInfo = $spellInfo->toArray();
+            $data = [
+                'spell'=>$spellInfo['pinyin'],
+                'hanzi'=>$Count
+            ];
+            SpellModel::insert($data);
+        }
+        return $spellInfo['pinyin'];
+        
 
     }
 
