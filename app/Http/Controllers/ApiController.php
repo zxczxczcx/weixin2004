@@ -106,7 +106,7 @@ class ApiController extends Controller
             }else if($xml_obj->MsgType=='text'){
                 //信息 回复
                 switch($xml_obj->Content){
-                    case'%%'.'天气';
+                    case'%天气';
                         $count_str = $this->weather();          //天气 返回参数
                         $weather = $this->attention($count_str);           //xml  返回微信
                         echo $weather;
